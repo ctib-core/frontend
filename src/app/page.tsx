@@ -1,13 +1,216 @@
-import Image from "next/image";
+"use client";
+import React from "react";
 
-export default function Home() {
+// Sidebar navigation items (mock)
+const sidebarNav = [
+  { label: "Dashboard", icon: "🏠", active: true },
+  { label: "Assets", icon: "💼" },
+  { label: "Staking Providers", icon: "🔗" },
+  { label: "Data API", icon: "📊" },
+  { label: "Liquid Staking", icon: "💧" },
+  { label: "Analytics", icon: "📈" },
+  { label: "Reports", icon: "📄" },
+];
+
+// Mock data for widgets
+const stakingData = [
+  {
+    name: "Ethereum (ETH)",
+    icon: "Ξ",
+    rate: 18.74,
+    change: 6.29,
+    chart: [4, 5, 6, 7, 6, 8, 7],
+    color: "bg-lime-400",
+    reward: true,
+  },
+  {
+    name: "Tron (TRX)",
+    icon: "T",
+    rate: 6.28,
+    change: -1.01,
+    chart: [2, 3, 2, 4, 3, 2, 3],
+    color: "bg-pink-400",
+    reward: false,
+  },
+  {
+    name: "Polygon (POL)",
+    icon: "P",
+    rate: 24.56,
+    change: 7.54,
+    chart: [3, 4, 5, 6, 5, 7, 6],
+    color: "bg-yellow-400",
+    reward: true,
+  },
+];
+
+const topAssets = [
+  {
+    rank: 1,
+    name: "Bitcoin",
+    symbol: "BTC",
+    price: "$84,333.10",
+    change: 2.45,
+    marketCap: "$2,271,802,053,097",
+    volume: "$48,629,094,996",
+    chart: [7, 8, 7, 9, 8, 10, 9],
+    color: "bg-yellow-400",
+  },
+  {
+    rank: 2,
+    name: "Ethereum",
+    symbol: "ETH",
+    price: "$5,333.10",
+    change: 4.15,
+    marketCap: "$591,889,123,274",
+    volume: "$30,629,094,996",
+    chart: [5, 6, 5, 7, 6, 8, 7],
+    color: "bg-lime-400",
+  },
+];
+
+function Sidebar({ className }: { className?: string }) {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px]">
-        <div>
-          hello world
-        </div>
-      </main>
+    <aside className={`bg-[#181c2f] w-56 min-h-screen flex flex-col py-6 px-4 border-r border-gray-800 ${className}`}>
+      <div className="text-2xl font-bold text-purple-400 mb-8 flex items-center gap-2">
+        <span>◎</span> BrandName
+      </div>
+      <nav className="flex-1 flex flex-col gap-2">
+        {sidebarNav.map((item) => (
+          <button
+            key={item.label}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors text-gray-200 font-medium ${item.active ? "bg-purple-900/60" : "hover:bg-gray-800"}`}
+          >
+            <span>{item.icon}</span>
+            {item.label}
+          </button>
+        ))}
+      </nav>
+    </aside>
+  );
+}
+
+function TopBar() {
+  return (
+    <header className="flex items-center justify-between px-8 py-4 bg-[#23243a] border-b border-gray-800 w-full">
+      <div className="flex gap-6 items-center max-sm:hidden">
+        <span className="text-lg font-bold text-gray-100">Cryptocurrencies</span>
+        <nav className="flex gap-4 text-gray-400 text-sm">
+          <span className="hover:text-purple-400 cursor-pointer">Exchanges</span>
+          <span className="hover:text-purple-400 cursor-pointer">Community</span>
+          <span className="hover:text-purple-400 cursor-pointer">Products</span>
+          <span className="hover:text-purple-400 cursor-pointer">Announcements</span>
+          <span className="hover:text-purple-400 cursor-pointer">Support</span>
+        </nav>
+      </div>
+      <div className="flex items-center gap-4">
+        <span className="text-xs text-gray-400 max-md:hidden">0x4cdb...050a</span>
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500" />
+      </div>
+    </header>
+  );
+}
+
+function StakingCard({ data }: { data: typeof stakingData[0] }) {
+  return (
+    <div className="bg-[#23243a] rounded-xl p-5 flex flex-col gap-2 shadow border border-gray-800 min-w-[220px]">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-2xl">{data.icon}</span>
+        <span className="font-semibold text-gray-100">{data.name}</span>
+      </div>
+      <div className="text-2xl font-bold text-gray-100">{data.rate}%</div>
+      <div className="flex items-center gap-2 text-xs">
+        <span className={data.reward ? "text-green-400" : "text-red-400"}>{data.reward ? `▲ ${data.change}%` : `▼ ${Math.abs(data.change)}%`}</span>
+        <span className="text-gray-400">Reward Rate</span>
+      </div>
+      {/* Simple bar chart mock */}
+      <div className="flex gap-1 mt-2 h-8 items-end">
+        {data.chart.map((v, i) => (
+          <div key={i} className={`${data.color} rounded w-2`} style={{ height: `${v * 6}px` }} />
+        ))}
+      </div>
     </div>
   );
 }
+
+function TopAssetsTable() {
+  return (
+    <div className="bg-[#23243a] rounded-xl p-5 shadow border border-gray-800 mt-4">
+      <div className="flex justify-between items-center mb-4">
+        <span className="font-semibold text-gray-100 text-lg">Top 100 Crypto Assets</span>
+        <div className="flex gap-2">
+          <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">24H</button>
+          <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">All</button>
+        </div>
+      </div>
+      <table className="w-full text-xs text-gray-300">
+        <thead>
+          <tr className="text-gray-400">
+            <th className="text-left">#</th>
+            <th className="text-left">Name</th>
+            <th className="text-right">Price</th>
+            <th className="text-right">Change</th>
+            <th className="text-right">Market Cap</th>
+            <th className="text-right">Volume</th>
+            <th className="text-right">Chart</th>
+          </tr>
+        </thead>
+        <tbody>
+          {topAssets.map((asset) => (
+            <tr key={asset.rank} className="border-b border-gray-800 last:border-0">
+              <td>{asset.rank}</td>
+              <td className="flex items-center gap-2 py-2">
+                <span className={`w-2 h-2 rounded-full ${asset.color}`} />
+                <span className="font-semibold text-gray-100">{asset.name}</span>
+                <span className="text-gray-400 text-xs">{asset.symbol}</span>
+              </td>
+              <td className="text-right">{asset.price}</td>
+              <td className={`text-right ${asset.change > 0 ? "text-green-400" : "text-red-400"}`}>{asset.change > 0 ? `▲ ${asset.change}%` : `▼ ${Math.abs(asset.change)}%`}</td>
+              <td className="text-right">{asset.marketCap}</td>
+              <td className="text-right">{asset.volume}</td>
+              <td className="text-right">
+                <div className="flex gap-1 justify-end items-end h-6">
+                  {asset.chart.map((v, i) => (
+                    <div key={i} className={`${asset.color} rounded w-1`} style={{ height: `${v * 2}px` }} />
+                  ))}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default function AnalysisPage() {
+  return (
+    <div className="flex min-h-screen bg-[#181c2f] text-gray-100 font-sans">
+      <Sidebar className="max-md:hidden" />
+      <div className="flex-1 flex flex-col min-h-screen w-full overflow-hidden">
+        <TopBar />
+        <main className="flex-1 p-8 bg-gradient-to-br from-[#181c2f] to-[#23243a]">
+          {/* Crypto Staking Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-2xl font-bold text-gray-100">Crypto Staking</span>
+              <div className="flex gap-2">
+                <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">All</button>
+                <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Week</button>
+                <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Month</button>
+                <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Year</button>
+              </div>
+              <div className="text-xs text-gray-400">18 Jan, 2025 – 18 Jun, 2025</div>
+            </div>
+            <div className="flex gap-6 mb-8 flex-wrap">
+              {stakingData.map((data) => (
+                <StakingCard key={data.name} data={data} />
+              ))}
+            </div>
+          </div>
+          {/* Top 100 Crypto Assets Table */}
+          <TopAssetsTable />
+        </main>
+      </div>
+    </div>
+  );
+} 

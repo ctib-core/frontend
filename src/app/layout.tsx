@@ -27,7 +27,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="w-full h-[4rem] justify-center items-center">
+        {/* <div className="w-full h-[4rem] justify-center items-center">
           <div>BrandName</div>
         </div>
         <div className="flex w-full h-full bg-green-00">
@@ -35,13 +35,13 @@ export default function RootLayout({
             <div>
               <p>logo</p>
               <p>Brand Name</p>
-            </div>
+            </div> */}
 
-          </div>
-          <div>
-            {children}
-          </div>
-        </div>
+        {/* </div>
+          <div> */}
+        {children}
+        {/* </div> */}
+        {/* </div> */}
       </body>
     </html>
   );
