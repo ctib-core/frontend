@@ -1,16 +1,6 @@
 "use client";
 import React from "react";
 
-// Sidebar navigation items (mock)
-const sidebarNav = [
-  { label: "Dashboard", icon: "🏠", active: true },
-  { label: "Assets", icon: "💼" },
-  { label: "Staking Providers", icon: "🔗" },
-  { label: "Data API", icon: "📊" },
-  { label: "Liquid Staking", icon: "💧" },
-  { label: "Analytics", icon: "📈" },
-  { label: "Reports", icon: "📄" },
-];
 
 // Mock data for widgets
 const stakingData = [
@@ -68,51 +58,9 @@ const topAssets = [
   },
 ];
 
-function Sidebar({ className }: { className?: string }) {
-  return (
-    <aside className={`bg-[#181c2f] w-56 min-h-screen flex flex-col py-6 px-4 border-r border-gray-800 ${className}`}>
-      <div className="text-2xl font-bold text-purple-400 mb-8 flex items-center gap-2">
-        <span>◎</span> BrandName
-      </div>
-      <nav className="flex-1 flex flex-col gap-2">
-        {sidebarNav.map((item) => (
-          <button
-            key={item.label}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors text-gray-200 font-medium ${item.active ? "bg-purple-900/60" : "hover:bg-gray-800"}`}
-          >
-            <span>{item.icon}</span>
-            {item.label}
-          </button>
-        ))}
-      </nav>
-    </aside>
-  );
-}
-
-function TopBar() {
-  return (
-    <header className="flex items-center justify-between px-8 py-4 bg-[#23243a] border-b border-gray-800 w-full">
-      <div className="flex gap-6 items-center max-sm:hidden">
-        <span className="text-lg font-bold text-gray-100">Cryptocurrencies</span>
-        <nav className="flex gap-4 text-gray-400 text-sm">
-          <span className="hover:text-purple-400 cursor-pointer">Exchanges</span>
-          <span className="hover:text-purple-400 cursor-pointer">Community</span>
-          <span className="hover:text-purple-400 cursor-pointer">Products</span>
-          <span className="hover:text-purple-400 cursor-pointer">Announcements</span>
-          <span className="hover:text-purple-400 cursor-pointer">Support</span>
-        </nav>
-      </div>
-      <div className="flex items-center gap-4">
-        <span className="text-xs text-gray-400 max-md:hidden">0x4cdb...050a</span>
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500" />
-      </div>
-    </header>
-  );
-}
-
 function StakingCard({ data }: { data: typeof stakingData[0] }) {
   return (
-    <div className="bg-[#23243a] rounded-xl p-5 flex flex-col gap-2 shadow border border-gray-800 min-w-[220px]">
+    <div className="bg-[#005f73] rounded-xl p-5 flex flex-col gap-2 shadow border border-gray-800 min-w-[220px]">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-2xl">{data.icon}</span>
         <span className="font-semibold text-gray-100">{data.name}</span>
@@ -184,33 +132,25 @@ function TopAssetsTable() {
 
 export default function AnalysisPage() {
   return (
-    <div className="flex min-h-screen bg-[#181c2f] text-gray-100 font-sans">
-      <Sidebar className="max-md:hidden" />
-      <div className="flex-1 flex flex-col min-h-screen w-full overflow-hidden">
-        <TopBar />
-        <main className="flex-1 p-8 bg-gradient-to-br from-[#181c2f] to-[#23243a]">
-          {/* Crypto Staking Section */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-2xl font-bold text-gray-100">Crypto Staking</span>
-              <div className="flex gap-2">
-                <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">All</button>
-                <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Week</button>
-                <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Month</button>
-                <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Year</button>
-              </div>
-              <div className="text-xs text-gray-400">18 Jan, 2025 – 18 Jun, 2025</div>
-            </div>
-            <div className="flex gap-6 mb-8 flex-wrap">
-              {stakingData.map((data) => (
-                <StakingCard key={data.name} data={data} />
-              ))}
-            </div>
+    <>
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-2xl font-bold text-gray-100">Crypto Prediction</span>
+          <div className="flex gap-2">
+            <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">All</button>
+            <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Week</button>
+            <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Month</button>
+            <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Year</button>
           </div>
-          {/* Top 100 Crypto Assets Table */}
-          <TopAssetsTable />
-        </main>
+          <div className="text-xs text-gray-400">18 Jan, 2025 – 18 Jun, 2025</div>
+        </div>
+        <div className="flex gap-6 mb-8 flex-wrap">
+          {stakingData.map((data) => (
+            <StakingCard key={data.name} data={data} />
+          ))}
+        </div>
       </div>
-    </div>
+      <TopAssetsTable />
+    </>
   );
 } 
