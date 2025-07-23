@@ -57,7 +57,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 bg-crypto-darker border-r border-crypto-border flex flex-col overflow-hidden">
+    <div className="w-64 bg-crypto-darker border-r border-crypto-border flex flex-col overflow-hidden flex-1">
       {/* Header */}
       <div className="p-4 border-b border-crypto-border">
         <div className="flex items-center justify-between mb-4">
