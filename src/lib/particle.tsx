@@ -47,7 +47,7 @@ const config = createConfig({
       // button
       '--pcm-button-font-weight': '500',
       '--pcm-button-hover-shadow': '0px 2px 4px rgba(0, 0, 0, 0.05)',
-      '--pcm-button-border-color': '#EAECF0',
+      '--pcm-button-border-color': 'gray',
 
       // primary button
       '--pcm-primary-button-color': '#b6ff3b',

@@ -131,9 +131,10 @@ export default function Home() {
           <span>Prediction Market</span>
         </div>
         <nav className="hidden md:flex gap-8 text-[#b6ff3b] font-medium">
-          <a href="#features" className="hover:underline">Features</a>
-          <a href="#how" className="hover:underline">How it works</a>
-          <a href="#simulate" className="hover:underline">Simulate</a>
+          {/* <a href="#features" className="hover:underline">Features</a> */}
+          {/* <a href="#how" className="hover:underline">How it works</a> */}
+          <a href="/app" className="hover:underline">Simulate</a>
+          <a href="/app" className="hover:underline">Launch App</a>
         </nav>
         <div className="flex gap-4">
           {/* <button className="px-6 py-2 rounded bg-transparent border border-[#b6ff3b] text-[#b6ff3b] font-bold hover:bg-[#b6ff3b] hover:text-[#0a0f1a] transition cursor-pointer">Connect Wallet</button> */}
