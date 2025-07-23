@@ -3,6 +3,7 @@ import CTASection from "@/components/ctaSection";
 import FeaturesSection from "@/components/featureSection";
 import Footer from "@/components/footer";
 import HeroSection from "@/components/hero";
+import { ConnectButton } from "@particle-network/connectkit";
 // import Navigation from "@/components/navigation";
 // import { useState } from "react";
 
@@ -135,8 +136,9 @@ export default function Home() {
           <a href="#simulate" className="hover:underline">Simulate</a>
         </nav>
         <div className="flex gap-4">
-          <button className="px-6 py-2 rounded bg-transparent border border-[#b6ff3b] text-[#b6ff3b] font-bold hover:bg-[#b6ff3b] hover:text-[#0a0f1a] transition">Login</button>
-          <button className="px-6 py-2 rounded bg-[#b6ff3b] text-[#0a0f1a] font-bold shadow-lg hover:bg-[#caff4d] transition">Sign up</button>
+          {/* <button className="px-6 py-2 rounded bg-transparent border border-[#b6ff3b] text-[#b6ff3b] font-bold hover:bg-[#b6ff3b] hover:text-[#0a0f1a] transition cursor-pointer">Connect Wallet</button> */}
+          <ConnectButton />
+          {/* <button className="px-6 py-2 rounded bg-[#b6ff3b] text-[#0a0f1a] font-bold shadow-lg hover:bg-[#caff4d] transition">Sign up</button> */}
         </div>
       </header>
 

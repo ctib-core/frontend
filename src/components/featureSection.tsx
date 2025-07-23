@@ -1,8 +1,12 @@
+"use client"
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shield, TrendingUp, DollarSign, Lock, Zap, Building } from "lucide-react";
+import { useAccount } from "@particle-network/connectkit";
 
 const FeaturesSection = () => {
+  const account = useAccount();
+  console.log("account", account.address)
   return (
     <section className="py-20 px-6 bg-background">
       <div className="max-w-7xl mx-auto">
