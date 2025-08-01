@@ -79,7 +79,7 @@ const Sidebar = () => {
             </Button>
             <div className="flex items-center space-x-2">
               <div className="w-6 h-6 bg-gradient-primary rounded-full"></div>
-              <span className="text-xs text-muted-foreground">Austin Robertson</span>
+              <span className="text-xs text-muted-foreground">Austin Robertsons</span>
             </div>
           </div>
         </div>
