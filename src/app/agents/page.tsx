@@ -72,6 +72,97 @@ const agents: AgentType[] = [
     },
     tags: ["vision", "image"],
   },
+  {
+    id: "4",
+    name: "VisionAI",
+    description: "Image recognition and analysis agent.",
+    avatar: "🖼️",
+    stats: {
+      simulations: 1500,
+      successRate: 0.89,
+      cycles: 37000,
+      cpu: 0.61,
+    },
+    tags: ["vision", "image"],
+  },
+  {
+    id: "4",
+    name: "VisionAI",
+    description: "Image recognition and analysis agent.",
+    avatar: "🖼️",
+    stats: {
+      simulations: 1500,
+      successRate: 0.89,
+      cycles: 37000,
+      cpu: 0.61,
+    },
+    tags: ["vision", "image"],
+  },
+  {
+    id: "4",
+    name: "VisionAI",
+    description: "Image recognition and analysis agent.",
+    avatar: "🖼️",
+    stats: {
+      simulations: 1500,
+      successRate: 0.89,
+      cycles: 37000,
+      cpu: 0.61,
+    },
+    tags: ["vision", "image"],
+  },
+  {
+    id: "4",
+    name: "VisionAI",
+    description: "Image recognition and analysis agent.",
+    avatar: "🖼️",
+    stats: {
+      simulations: 1500,
+      successRate: 0.89,
+      cycles: 37000,
+      cpu: 0.61,
+    },
+    tags: ["vision", "image"],
+  },
+  {
+    id: "4",
+    name: "VisionAI",
+    description: "Image recognition and analysis agent.",
+    avatar: "🖼️",
+    stats: {
+      simulations: 1500,
+      successRate: 0.89,
+      cycles: 37000,
+      cpu: 0.61,
+    },
+    tags: ["vision", "image"],
+  },
+  {
+    id: "4",
+    name: "VisionAI",
+    description: "Image recognition and analysis agent.",
+    avatar: "🖼️",
+    stats: {
+      simulations: 1500,
+      successRate: 0.89,
+      cycles: 37000,
+      cpu: 0.61,
+    },
+    tags: ["vision", "image"],
+  },
+  {
+    id: "4",
+    name: "VisionAI",
+    description: "Image recognition and analysis agent.",
+    avatar: "🖼️",
+    stats: {
+      simulations: 1500,
+      successRate: 0.89,
+      cycles: 37000,
+      cpu: 0.61,
+    },
+    tags: ["vision", "image"],
+  },
 ];
 
 const allTags: string[] = Array.from(new Set(agents.flatMap((a) => a.tags)));
@@ -106,7 +197,7 @@ function AgentCard({ agent, selected, onClick }: {
 }) {
   return (
     <button
-      className={`flex flex-col items-start p-4 rounded-lg border-2 transition-all text-left shadow-md bg-gray-900 hover:border-purple-500 focus:outline-none w-full ${selected ? "border-purple-500" : "border-transparent"}`}
+      className={`flex flex-col items-start p-4 rounded-lg border-2 transition-all text-left shadow-md bg-[#005f73] hover:border-purple-500 focus:outline-none w-full  ${selected ? "border-purple-500" : "border-transparent"}`}
       onClick={onClick}
     >
       <div className="flex items-center gap-3 mb-2">
@@ -197,7 +288,7 @@ export default function AgentsPage() {
             )}
           </div>
           {/* Agent Overview & Stats */}
-          <div className="flex-1 flex flex-col gap-6">
+          {/* <div className="flex-1 flex flex-col gap-6">
             {selectedAgent && (
               <div className="bg-gray-900 rounded-lg p-6 shadow-md mb-4">
                 <div className="flex items-center gap-4 mb-2">
@@ -215,9 +306,9 @@ export default function AgentsPage() {
               </div>
             )}
             {selectedAgent && <AgentStats stats={selectedAgent.stats} />}
-          </div>
+          </div> */}
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   );
 }
