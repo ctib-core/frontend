@@ -1,156 +1,158 @@
-"use client";
-import React from "react";
+import CryptoHub from "@/components/cryptoHub";
+import CTASection from "@/components/ctaSection";
+import FeaturesSection from "@/components/featureSection";
+import Footer from "@/components/footer";
+import HeroSection from "@/components/hero";
+import { ConnectButton } from "@particle-network/connectkit";
+// import Navigation from "@/components/navigation";
+// import { useState } from "react";
 
+// Custom colors from the sample
+const COLORS = {
+  bg: "#0a0f1a",
+  card: "rgba(16,20,26,0.85)",
+  accent: "#b6ff3b",
+  accent2: "#00ffb0",
+  text: "#f1f5f9",
+  muted: "#94a3b8",
+  border: "#23272f",
+};
 
-// Mock data for widgets
-const stakingData = [
-  {
-    name: "Ethereum (ETH)",
-    icon: "Ξ",
-    rate: 18.74,
-    change: 6.29,
-    chart: [4, 5, 6, 7, 6, 8, 7],
-    color: "bg-lime-400",
-    reward: true,
-  },
-  {
-    name: "Tron (TRX)",
-    icon: "T",
-    rate: 6.28,
-    change: -1.01,
-    chart: [2, 3, 2, 4, 3, 2, 3],
-    color: "bg-pink-400",
-    reward: false,
-  },
-  {
-    name: "Polygon (POL)",
-    icon: "P",
-    rate: 24.56,
-    change: 7.54,
-    chart: [3, 4, 5, 6, 5, 7, 6],
-    color: "bg-yellow-400",
-    reward: true,
-  },
-];
+// const markets = [
+//   { name: "BTC > $70k by Dec 2024", odds: "2.5x" },
+//   { name: "ETH > $5k by Dec 2024", odds: "3.1x" },
+//   { name: "SOL > $500 by Dec 2024", odds: "4.2x" },
+// ];
 
-const topAssets = [
-  {
-    rank: 1,
-    name: "Bitcoin",
-    symbol: "BTC",
-    price: "$84,333.10",
-    change: 2.45,
-    marketCap: "$2,271,802,053,097",
-    volume: "$48,629,094,996",
-    chart: [7, 8, 7, 9, 8, 10, 9],
-    color: "bg-yellow-400",
-  },
-  {
-    rank: 2,
-    name: "Ethereum",
-    symbol: "ETH",
-    price: "$5,333.10",
-    change: 4.15,
-    marketCap: "$591,889,123,274",
-    volume: "$30,629,094,996",
-    chart: [5, 6, 5, 7, 6, 8, 7],
-    color: "bg-lime-400",
-  },
-];
-
-function StakingCard({ data }: { data: typeof stakingData[0] }) {
+function GridOverlay() {
   return (
-    <div className="bg-[#005f73] rounded-xl p-5 flex flex-col gap-2 shadow border border-gray-800 min-w-[220px]">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-2xl">{data.icon}</span>
-        <span className="font-semibold text-gray-100">{data.name}</span>
-      </div>
-      <div className="text-2xl font-bold text-gray-100">{data.rate}%</div>
-      <div className="flex items-center gap-2 text-xs">
-        <span className={data.reward ? "text-green-400" : "text-red-400"}>{data.reward ? `▲ ${data.change}%` : `▼ ${Math.abs(data.change)}%`}</span>
-        <span className="text-gray-400">Reward Rate</span>
-      </div>
-      {/* Simple bar chart mock */}
-      <div className="flex gap-1 mt-2 h-8 items-end">
-        {data.chart.map((v, i) => (
-          <div key={i} className={`${data.color} rounded w-2`} style={{ height: `${v * 6}px` }} />
-        ))}
-      </div>
-    </div>
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-0 z-0 bg-gradient-hero"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)",
+        backgroundSize: "40px 40px",
+      }}
+    />
   );
 }
 
-function TopAssetsTable() {
+// function MockSimulation() {
+//   const [walletConnected, setWalletConnected] = useState(false);
+//   const [selectedMarket, setSelectedMarket] = useState(markets[0].name);
+//   const [amount, setAmount] = useState(100);
+//   const [result, setResult] = useState<string | null>(null);
+//   const [loading, setLoading] = useState(false);
+
+//   function handleConnect() {
+//     setWalletConnected(true);
+//   }
+
+//   function handleSimulate() {
+//     setLoading(true);
+//     setTimeout(() => {
+//       const win = Math.random() > 0.5;
+//       setResult(
+//         win
+//           ? `🎉 You won! Payout: $${(amount * 2.5).toFixed(2)}`
+//           : "😢 You lost your stake. Try again!"
+//       );
+//       setLoading(false);
+//     }, 1200);
+//   }
+
+//   return (
+//     <div
+//       className="rounded-2xl p-8 shadow-xl max-w-md w-full mx-auto mt-8"
+//       style={{
+//         background: COLORS.card,
+//         border: `1.5px solid ${COLORS.border}`,
+//         backdropFilter: "blur(8px)",
+//       }}
+//     >
+//       <h3 className="text-2xl font-bold mb-4" style={{ color: COLORS.accent }}>
+//         Simulate a Trade
+//       </h3>
+//       {!walletConnected ? (
+//         <button
+//           onClick={handleConnect}
+//           className="w-full py-2 rounded bg-[#b6ff3b] text-[#0a0f1a] font-semibold text-lg hover:bg-[#caff4d] transition mb-2 shadow-lg"
+//         >
+//           Connect Wallet (Mock)
+//         </button>
+//       ) : (
+//         <>
+//           <label className="block mb-2 font-medium">Select Market</label>
+//           <select
+//             className="w-full p-2 rounded bg-[#10141a] border border-[#23272f] mb-4 text-[#f1f5f9]"
+//             value={selectedMarket}
+//             onChange={e => setSelectedMarket(e.target.value)}
+//           >
+//             {markets.map(m => (
+//               <option key={m.name} value={m.name}>
+//                 {m.name} ({m.odds})
+//               </option>
+//             ))}
+//           </select>
+//           <label className="block mb-2 font-medium">Stake Amount ($)</label>
+//           <input
+//             type="number"
+//             min={1}
+//             className="w-full p-2 rounded bg-[#10141a] border border-[#23272f] mb-4 text-[#f1f5f9]"
+//             value={amount}
+//             onChange={e => setAmount(Number(e.target.value))}
+//           />
+//           <button
+//             onClick={handleSimulate}
+//             disabled={loading}
+//             className="w-full py-2 rounded bg-[#b6ff3b] text-[#0a0f1a] font-semibold text-lg hover:bg-[#caff4d] transition mb-2 shadow-lg disabled:opacity-60"
+//           >
+//             {loading ? "Simulating..." : "Simulate Trade"}
+//           </button>
+//           {result && <div className="mt-4 text-lg text-center">{result}</div>}
+//         </>
+//       )}
+//     </div>
+//   );
+// }
+
+export default function Home() {
   return (
-    <div className="bg-[#23243a] rounded-xl p-5 shadow border border-gray-800 mt-4">
-      <div className="flex justify-between items-center mb-4">
-        <span className="font-semibold text-gray-100 text-lg">Top 100 Crypto Assets</span>
-        <div className="flex gap-2">
-          <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">24H</button>
-          <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">All</button>
+    <main
+      className="relative min-h-screen text-[#f1f5f9] font-sans overflow-x-hidden"
+      style={{ background: COLORS.bg }}
+    >
+      <GridOverlay />
+      {/* Header */}
+      <header className="flex justify-between items-center px-8 py-6 z-10 relative">
+        <div className="flex items-center gap-2 text-xl font-extrabold tracking-tight">
+          <span className="w-6 h-6 bg-[#b6ff3b] rounded grid place-items-center font-black text-[#0a0f1a]">P</span>
+          <span>Prediction Market</span>
         </div>
-      </div>
-      <table className="w-full text-xs text-gray-300">
-        <thead>
-          <tr className="text-gray-400">
-            <th className="text-left">#</th>
-            <th className="text-left">Name</th>
-            <th className="text-right">Price</th>
-            <th className="text-right">Change</th>
-            <th className="text-right">Market Cap</th>
-            <th className="text-right">Volume</th>
-            <th className="text-right">Chart</th>
-          </tr>
-        </thead>
-        <tbody>
-          {topAssets.map((asset) => (
-            <tr key={asset.rank} className="border-b border-gray-800 last:border-0">
-              <td>{asset.rank}</td>
-              <td className="flex items-center gap-2 py-2">
-                <span className={`w-2 h-2 rounded-full ${asset.color}`} />
-                <span className="font-semibold text-gray-100">{asset.name}</span>
-                <span className="text-gray-400 text-xs">{asset.symbol}</span>
-              </td>
-              <td className="text-right">{asset.price}</td>
-              <td className={`text-right ${asset.change > 0 ? "text-green-400" : "text-red-400"}`}>{asset.change > 0 ? `▲ ${asset.change}%` : `▼ ${Math.abs(asset.change)}%`}</td>
-              <td className="text-right">{asset.marketCap}</td>
-              <td className="text-right">{asset.volume}</td>
-              <td className="text-right">
-                <div className="flex gap-1 justify-end items-end h-6">
-                  {asset.chart.map((v, i) => (
-                    <div key={i} className={`${asset.color} rounded w-1`} style={{ height: `${v * 2}px` }} />
-                  ))}
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        <nav className="hidden md:flex gap-8 text-[#b6ff3b] font-medium">
+          {/* <a href="#features" className="hover:underline">Features</a> */}
+          {/* <a href="#how" className="hover:underline">How it works</a> */}
+          <a href="/app" className="hover:underline">Simulate</a>
+          <a href="/app" className="hover:underline">Launch App</a>
+        </nav>
+        <div className="flex gap-4">
+          {/* <button className="px-6 py-2 rounded bg-transparent border border-[#b6ff3b] text-[#b6ff3b] font-bold hover:bg-[#b6ff3b] hover:text-[#0a0f1a] transition cursor-pointer">Connect Wallet</button> */}
+          <ConnectButton />
+          {/* <button className="px-6 py-2 rounded bg-[#b6ff3b] text-[#0a0f1a] font-bold shadow-lg hover:bg-[#caff4d] transition">Sign up</button> */}
+        </div>
+      </header>
+
+      {/* Hero Section */}
+
+
+      {/* <Navigation /> */}
+      <HeroSection />
+      <FeaturesSection />
+      <CryptoHub />
+      <CTASection />
+      <Footer />
+
+    </main>
   );
 }
-
-export default function AnalysisPage() {
-  return (
-    <>
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-2xl font-bold text-gray-100">Crypto Prediction</span>
-          <div className="flex gap-2">
-            <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">All</button>
-            <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Week</button>
-            <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Month</button>
-            <button className="bg-gray-800 px-3 py-1 rounded text-gray-200 text-xs">Year</button>
-          </div>
-          <div className="text-xs text-gray-400">18 Jan, 2025 – 18 Jun, 2025</div>
-        </div>
-        <div className="flex gap-6 mb-8 flex-wrap">
-          {stakingData.map((data) => (
-            <StakingCard key={data.name} data={data} />
-          ))}
-        </div>
-      </div>
-      <TopAssetsTable />
-    </>
-  );
-} 
