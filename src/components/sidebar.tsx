@@ -85,23 +85,23 @@ const Sidebar = () => {
     { name: "loans", icon: Building2, count: 1 },
     { name: "vaults", icon: Vault, count: 1 },
     { name: "portfolio", icon: FolderOpen, count: 1 },
-    { name: "liquidity pools", icon: Droplets, count: 1 },
+    { name: "liquidity-pools", icon: Droplets, count: 1 },
     { name: "swap", icon: ArrowLeftRight, count: 1 },
   ];
 
   const uiElements = [
-    { name: "Menu Styles", icon: Menu },
-    { name: "Tables", icon: FileText },
-    { name: "Charts", icon: BarChart },
-    { name: "Forms", icon: FileEdit },
-    { name: "Pricing", icon: DollarSign },
-    { name: "Settings", icon: Settings },
-    { name: "Modals/Pop-Ups", icon: HelpCircle },
+    { name: "menu-styles", displayName: "Menu Styles", icon: Menu },
+    { name: "tables", displayName: "Tables", icon: FileText },
+    { name: "charts", displayName: "Charts", icon: BarChart },
+    { name: "forms", displayName: "Forms", icon: FileEdit },
+    { name: "pricing", displayName: "Pricing", icon: DollarSign },
+    { name: "settings", displayName: "Settings", icon: Settings },
+    { name: "modals", displayName: "Modals/Pop-Ups", icon: HelpCircle },
   ];
 
   const supportItems = [
-    { name: "Documentation", icon: FileText },
-    { name: "Support", icon: HelpCircle },
+    { name: "documentation", displayName: "Documentation", icon: FileText },
+    { name: "support", displayName: "Support", icon: HelpCircle },
   ];
 
   return (
@@ -172,13 +172,15 @@ const Sidebar = () => {
             {uiElements.map((item) => {
               const Icon = item.icon;
               return (
-                <button
+                <Link
                   key={item.name}
+                  prefetch={true}
+                  href={`/app/ui/${item.name}`}
                   className="w-full flex items-center space-x-2 px-2 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-crypto-card transition-colors cursor-pointer"
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="text-sm">{item.name}</span>
-                </button>
+                  <span className="text-sm">{item.displayName}</span>
+                </Link>
               );
             })}
           </div>
@@ -193,13 +195,15 @@ const Sidebar = () => {
             {supportItems.map((item) => {
               const Icon = item.icon;
               return (
-                <button
+                <Link
                   key={item.name}
-                  className="w-full flex items-center space-x-2 px-2 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-crypto-card transition-colors"
+                  prefetch={true}
+                  href={`/app/${item.name}`}
+                  className="w-full flex items-center space-x-2 px-2 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-crypto-card transition-colors cursor-pointer"
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="text-sm">{item.name}</span>
-                </button>
+                  <span className="text-sm">{item.displayName}</span>
+                </Link>
               );
             })}
           </div>
