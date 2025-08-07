@@ -15,7 +15,7 @@ const TRADING_TOKENS = [
   { symbol: 'BTCUSD', name: 'Bitcoin', icon: Bitcoin, tradingViewSymbol: 'BTCUSDT' },
   { symbol: 'ETHUSD', name: 'Ethereum', icon: TrendingUp, tradingViewSymbol: 'ETHUSDT' },
   { symbol: 'USDCUSD', name: 'USD Coin', icon: DollarSign, tradingViewSymbol: 'USDCUSDT' },
-  { symbol: 'USDTUSD', name: 'Tether', icon: DollarSign, tradingViewSymbol: 'USDTUSDT' }
+  { symbol: 'ETHUSDT', name: 'Ethereum USDT', icon: DollarSign, tradingViewSymbol: 'ETHUSDT' }
 ];
 
 // Lot size presets
@@ -78,13 +78,23 @@ interface Position {
   closePrice?: number;
 }
 
-// Helper function to calculate pips
+// Helper function to get pip value for crypto pairs
+function getPipValue(symbol: string): number {
+  // For crypto pairs, pip value depends on the price range
+  const price = getFallbackPrice(symbol);
+  if (price >= 1000) return 0.1; // BTC, ETH - 0.1 pip
+  if (price >= 100) return 0.01; // Mid-range tokens
+  if (price >= 1) return 0.001; // Stablecoins
+  return 0.0001; // Default
+}
+
+// Helper function to calculate pips for crypto
 function calculatePips(currentPrice: number, targetPrice: number, symbol: string): number {
-  const pipValue = symbol.includes('JPY') ? 0.01 : 0.0001;
+  const pipValue = getPipValue(symbol);
   return Math.abs(targetPrice - currentPrice) / pipValue;
 }
 
-// Helper function to calculate profit/loss
+// Helper function to calculate profit/loss for crypto
 function calculateProfitLoss(
   entryPrice: number, 
   currentPrice: number, 
@@ -92,13 +102,21 @@ function calculateProfitLoss(
   type: 'buy' | 'sell',
   symbol: string
 ): number {
-  const pipValue = symbol.includes('JPY') ? 0.01 : 0.0001;
+  const pipValue = getPipValue(symbol);
   const pips = type === 'buy' 
     ? (currentPrice - entryPrice) / pipValue
     : (entryPrice - currentPrice) / pipValue;
   
-  const lotMultiplier = Math.abs(lotSize) * 100000; // Calculate based on actual lot size
-  return (pips * 10) / lotMultiplier; // $10 per pip for standard lot
+  // For crypto, calculate profit based on lot size and price movement
+  const priceDifference = type === 'buy' 
+    ? currentPrice - entryPrice 
+    : entryPrice - currentPrice;
+  
+  // Calculate profit based on lot size (1 lot = $100,000 equivalent)
+  const lotValue = Math.abs(lotSize) * 100000;
+  const profit = (priceDifference / entryPrice) * lotValue;
+  
+  return profit;
 }
 
 // Fetcher function for getting OHLC data for a specific ticker
@@ -245,6 +263,20 @@ const Page = () => {
   const selectedTokenData = tradingTokens.find(token => token.symbol === selectedToken);
   const currentPrice = selectedTokenData?.price || 0;
 
+  // Update TP/SL when token changes
+  React.useEffect(() => {
+    if (currentPrice > 0) {
+      // Update TP if it's empty or if we're applying a ratio
+      if (!takeProfit) {
+        setTakeProfit(currentPrice.toFixed(5));
+      }
+      // Update SL if it's empty
+      if (!stopLoss) {
+        setStopLoss(currentPrice.toFixed(5));
+      }
+    }
+  }, [selectedToken, currentPrice]);
+
   // Calculate pips for TP and SL
   const tpPips = takeProfit ? calculatePips(currentPrice, parseFloat(takeProfit), selectedToken) : 0;
   const slPips = stopLoss ? calculatePips(currentPrice, parseFloat(stopLoss), selectedToken) : 0;
@@ -255,27 +287,44 @@ const Page = () => {
 
   // Apply risk ratio when selected
   const applyRiskRatio = (ratio: number) => {
-    if (slPips > 0) {
-      const newTpPips = slPips * ratio;
-      const newTpPrice = tradeType === 'buy' 
-        ? currentPrice + (newTpPips * 0.0001)
-        : currentPrice - (newTpPips * 0.0001);
+    if (stopLoss && currentPrice > 0) {
+      const slPrice = parseFloat(stopLoss);
+      const riskDistance = Math.abs(currentPrice - slPrice);
+      const rewardDistance = riskDistance * ratio;
+      
+      let newTpPrice: number;
+      if (tradeType === 'buy') {
+        newTpPrice = currentPrice + rewardDistance;
+      } else {
+        newTpPrice = currentPrice - rewardDistance;
+      }
+      
       setTakeProfit(newTpPrice.toFixed(5));
+      setSelectedRatio(ratio);
     }
   };
 
   // Handle TP input focus
   const handleTpFocus = () => {
-    if (!takeProfit) {
+    if (!takeProfit && currentPrice > 0) {
       setTakeProfit(currentPrice.toFixed(5));
     }
   };
 
   // Handle SL input focus
   const handleSlFocus = () => {
-    if (!stopLoss) {
+    if (!stopLoss && currentPrice > 0) {
       setStopLoss(currentPrice.toFixed(5));
     }
+  };
+
+  // Handle token selection
+  const handleTokenSelection = (tokenSymbol: string) => {
+    setSelectedToken(tokenSymbol);
+    // Reset TP/SL when changing tokens
+    setTakeProfit('');
+    setStopLoss('');
+    setSelectedRatio(null);
   };
 
   // Simulate live price updates
@@ -363,7 +412,7 @@ const Page = () => {
                 return (
                   <button
                     key={token.symbol}
-                    onClick={() => setSelectedToken(token.symbol)}
+                    onClick={() => handleTokenSelection(token.symbol)}
                     className={`w-full flex items-center justify-between p-3 rounded-lg border transition-colors ${
                       selectedToken === token.symbol
                         ? 'bg-primary text-primary-foreground border-primary'
@@ -548,16 +597,18 @@ const Page = () => {
                   <Button
                     key={ratio.value}
                     variant={selectedRatio === ratio.value ? 'default' : 'outline'}
-                    onClick={() => {
-                      setSelectedRatio(ratio.value);
-                      applyRiskRatio(ratio.value);
-                    }}
+                    onClick={() => applyRiskRatio(ratio.value)}
                     size="sm"
                   >
                     {ratio.name}
                   </Button>
                 ))}
               </div>
+              {selectedRatio && (
+                <div className="text-sm text-muted-foreground mt-1">
+                  Applied {selectedRatio}:1 ratio
+                </div>
+              )}
             </div>
 
             {/* Place Trade Button */}
