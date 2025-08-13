@@ -43,21 +43,38 @@ const Page = () => {
     );
   };
 
+  // Parse metric strings like "850B", "25B", "800M" to numbers for sorting
+  const parseMetric = (value: string): number => {
+    const match = String(value).trim().match(/^(\d+(?:\.\d+)?)([KMB])?$/i);
+    if (!match) return Number.NaN;
+    const num = parseFloat(match[1]);
+    const suffix = (match[2] || '').toUpperCase();
+    const mult = suffix === 'B' ? 1e9 : suffix === 'M' ? 1e6 : suffix === 'K' ? 1e3 : 1;
+    return num * mult;
+  };
+
   const sortedCryptoData = [...CRYPTO_DATA].sort((a, b) => {
-    const aValue = a[sortBy as keyof typeof a];
-    const bValue = b[sortBy as keyof typeof b];
-    
-    if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortOrder === 'asc' 
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
+    const aValue = a[sortBy as keyof typeof a] as any;
+    const bValue = b[sortBy as keyof typeof b] as any;
+
+    // Numeric fields
+    if (sortBy === 'price' || sortBy === 'change') {
+      const av = Number(aValue);
+      const bv = Number(bValue);
+      return sortOrder === 'asc' ? av - bv : bv - av;
     }
-    
-    if (typeof aValue === 'number' && typeof bValue === 'number') {
-      return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+
+    // Metric strings
+    if (sortBy === 'marketCap' || sortBy === 'volume') {
+      const av = parseMetric(String(aValue));
+      const bv = parseMetric(String(bValue));
+      return sortOrder === 'asc' ? av - bv : bv - av;
     }
-    
-    return 0;
+
+    // Strings (name, symbol, status)
+    const avs = String(aValue);
+    const bvs = String(bValue);
+    return sortOrder === 'asc' ? avs.localeCompare(bvs) : bvs.localeCompare(avs);
   });
 
   return (
@@ -71,6 +88,7 @@ const Page = () => {
         {/* Basic Table */}
         <Card className="bg-crypto-card border-crypto-border p-6">
           <h3 className="text-lg font-semibold mb-4">Basic Table</h3>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -101,11 +119,13 @@ const Page = () => {
               ))}
             </TableBody>
           </Table>
+          </div>
         </Card>
 
         {/* Sortable Table */}
         <Card className="bg-crypto-card border-crypto-border p-6">
           <h3 className="text-lg font-semibold mb-4">Sortable Table</h3>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -115,6 +135,15 @@ const Page = () => {
                 >
                   <div className="flex items-center space-x-2">
                     <span>Name</span>
+                    <ArrowUpDown className="w-4 h-4" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-crypto-card"
+                  onClick={() => handleSort('symbol')}
+                >
+                  <div className="flex items-center space-x-2">
+                    <span>Symbol</span>
                     <ArrowUpDown className="w-4 h-4" />
                   </div>
                 </TableHead>
@@ -152,6 +181,7 @@ const Page = () => {
               {sortedCryptoData.map((crypto) => (
                 <TableRow key={crypto.id}>
                   <TableCell className="font-medium">{crypto.name}</TableCell>
+                  <TableCell>{crypto.symbol}</TableCell>
                   <TableCell>${crypto.price.toLocaleString()}</TableCell>
                   <TableCell className={crypto.change >= 0 ? 'text-green-500' : 'text-red-500'}>
                     {crypto.change >= 0 ? '+' : ''}{crypto.change}%
@@ -174,6 +204,7 @@ const Page = () => {
               ))}
             </TableBody>
           </Table>
+          </div>
         </Card>
 
         {/* Selectable Table */}
@@ -193,6 +224,7 @@ const Page = () => {
               </span>
             )}
           </div>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -248,11 +280,13 @@ const Page = () => {
               ))}
             </TableBody>
           </Table>
+          </div>
         </Card>
 
         {/* Compact Table */}
         <Card className="bg-crypto-card border-crypto-border p-6">
           <h3 className="text-lg font-semibold mb-4">Compact Table</h3>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -287,11 +321,13 @@ const Page = () => {
               ))}
             </TableBody>
           </Table>
+          </div>
         </Card>
 
         {/* Table with Pagination */}
         <Card className="bg-crypto-card border-crypto-border p-6">
           <h3 className="text-lg font-semibold mb-4">Table with Pagination</h3>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -320,6 +356,7 @@ const Page = () => {
               ))}
             </TableBody>
           </Table>
+          </div>
           <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-muted-foreground">
               Showing 1 to {USER_DATA.length} of {USER_DATA.length} results
@@ -355,9 +392,9 @@ const DataTable = ({ data }) => {
       <TableBody>
         {data.map((item) => (
           <TableRow key={item.id}>
-            <TableCell>{item.name}</TableCell>
-            <TableCell>${item.price}</TableCell>
-            <TableCell>{item.change}%</TableCell>
+            <TableCell>\${item.name}</TableCell>
+            <TableCell>\${item.price}</TableCell>
+            <TableCell>\${item.change}%</TableCell>
           </TableRow>
         ))}
       </TableBody>
