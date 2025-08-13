@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Bitcoin, TrendingUp, TrendingDown, DollarSign, ArrowUpDown, Plus, Minus, X, ArrowRight, Settings, BarChart3, Clock } from 'lucide-react'
 import React from 'react'
+import { useSearchParams } from 'next/navigation'
 
 // Mock token data
 const TOKENS = [
   { symbol: 'BTC', name: 'Bitcoin', icon: Bitcoin, price: 45000, change: 2.5, balance: 0.245 },
   { symbol: 'ETH', name: 'Ethereum', icon: TrendingUp, price: 3000, change: -1.2, balance: 2.15 },
   { symbol: 'USDC', name: 'USD Coin', icon: DollarSign, price: 1.00, change: 0.0, balance: 5000.00 },
-  { symbol: 'SOL', name: 'Solana', icon: TrendingDown, price: 100, change: 5.8, balance: 15.5 }
+  { symbol: 'SOL', name: 'Solana', icon: TrendingDown, price: 100, change: 5.8, balance: 15.5 },
+  { symbol: 'PUL', name: 'Pulley', icon: TrendingUp, price: 0.004, change: 0.0, balance: 10000.00 }
 ];
 
 const SWAP_HISTORY = [
@@ -20,9 +22,24 @@ const SWAP_HISTORY = [
 ];
 
 const Page = () => {
-  const [fromToken, setFromToken] = React.useState('BTC');
-  const [toToken, setToToken] = React.useState('ETH');
-  const [fromAmount, setFromAmount] = React.useState('');
+  const searchParams = useSearchParams();
+  
+  // Initialize state from URL parameters if they exist
+  const [fromToken, setFromToken] = React.useState(() => {
+    const from = searchParams.get('from');
+    return from && TOKENS.find(t => t.symbol === from) ? from : 'BTC';
+  });
+  
+  const [toToken, setToToken] = React.useState(() => {
+    const to = searchParams.get('to');
+    return to && TOKENS.find(t => t.symbol === to) ? to : 'ETH';
+  });
+  
+  const [fromAmount, setFromAmount] = React.useState(() => {
+    const amount = searchParams.get('amount');
+    return amount || '';
+  });
+  
   const [toAmount, setToAmount] = React.useState('');
   const [slippage, setSlippage] = React.useState(0.5);
   const [showSettings, setShowSettings] = React.useState(false);
@@ -40,6 +57,23 @@ const Page = () => {
       setToAmount(calculatedAmount.toFixed(6));
     }
   }, [fromAmount, fromTokenData, toTokenData, swapRate]);
+
+  // Handle URL parameter changes
+  React.useEffect(() => {
+    const from = searchParams.get('from');
+    const to = searchParams.get('to');
+    const amount = searchParams.get('amount');
+    
+    if (from && TOKENS.find(t => t.symbol === from)) {
+      setFromToken(from);
+    }
+    if (to && TOKENS.find(t => t.symbol === to)) {
+      setToToken(to);
+    }
+    if (amount) {
+      setFromAmount(amount);
+    }
+  }, [searchParams]);
 
   const handleSwap = () => {
     if (!fromAmount || !toAmount) return;
@@ -69,6 +103,35 @@ const Page = () => {
             Settings
           </Button>
         </div>
+
+        {/* Pre-filled swap info banner */}
+        {searchParams.get('from') && searchParams.get('amount') && (
+          <Card className="bg-blue-50 border-blue-200 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <ArrowRight className="w-4 h-4 text-blue-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-blue-900">Pre-filled Swap</div>
+                  <div className="text-sm text-blue-700">
+                    Ready to swap {searchParams.get('amount')} {searchParams.get('from')} for {toToken}
+                  </div>
+                </div>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setFromAmount('');
+                  setToAmount('');
+                }}
+              >
+                Clear
+              </Button>
+            </div>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Swap Interface */}
