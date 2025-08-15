@@ -8,6 +8,10 @@ import { Bitcoin, TrendingUp, TrendingDown, DollarSign, ArrowUpDown, Plus, Minus
 import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
+import { readContract, writeContract } from '@wagmi/core'
+import { useWriteContract } from 'wagmi'
+import { controller_abi, controller_addr, core_addr, gateway_abi, gateway_addr } from '@/utils/web3'
+import { useAccount } from '@particle-network/connectkit'
 
 // Mock wallet data
 const WALLET_BALANCES = [
@@ -57,7 +61,40 @@ const Page = () => {
   const [showSendModal, setShowSendModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
   const [showBalances, setShowBalances] = useState(true);
-  
+  const { writeContract } = useWriteContract();
+  const { address } = useAccount();
+  console.log(address)
+
+
+  async function buyPulleyTokens() {
+
+    await writeContract(
+      {
+        abi: gateway_abi,
+        address: gateway_addr,
+        functionName: "buyPulleyTokens",
+        account: address as `0x${string}`,
+        args: [core_addr, depositAmount]
+      }
+    )
+  }
+
+
+  async function depositToTradingPool() {
+
+    await writeContract(
+      {
+        abi: gateway_abi,
+        address: gateway_addr,
+        functionName: "depositToTradingPool",
+        args: [core_addr, depositAmount],
+        account: address as `0x${string}`,
+      }
+    )
+  }
+
+  // integration 
+
   // New state for deposit/withdraw functionality
   const [showDepositCard, setShowDepositCard] = useState(false);
   const [showWithdrawCard, setShowWithdrawCard] = useState(false);
@@ -65,12 +102,12 @@ const Page = () => {
   const [withdrawAction, setWithdrawAction] = useState<WithdrawAction | null>(null);
   const [depositCardView, setDepositCardView] = useState<CardView>('options');
   const [withdrawCardView, setWithdrawCardView] = useState<CardView>('options');
-  
+
   // Form states
   const [depositAmount, setDepositAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState('USDC');
   const [withdrawAmount, setWithdrawAmount] = useState('');
-  
+
   // Success and loading states
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -99,16 +136,20 @@ const Page = () => {
   // Handle buy pulley tokens
   const handleBuyPulley = async () => {
     if (!depositAmount) return;
-    
+
     setIsLoading(true);
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       console.log(`Buying ${depositAmount} PUL tokens`);
-      
+
       setSuccessMessage(`Successfully bought ${depositAmount} PUL tokens!`);
       setShowSuccess(true);
-      
+
+
+      // start contract deposit. 
+      buyPulleyTokens();
+
       // Reset form after delay
       setTimeout(() => {
         setDepositAmount('');
@@ -127,16 +168,19 @@ const Page = () => {
   // Handle deposit to trading pool
   const handleDepositToPool = async () => {
     if (!depositAmount || !selectedToken) return;
-    
+
     setIsLoading(true);
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       console.log(`Depositing ${depositAmount} ${selectedToken} to trading pool`);
-      
+
       setSuccessMessage(`Successfully deposited ${depositAmount} ${selectedToken} to trading pool!`);
       setShowSuccess(true);
-      
+
+      // deposit
+      depositToTradingPool()
+
       // Reset form after delay
       setTimeout(() => {
         setDepositAmount('');
@@ -156,16 +200,16 @@ const Page = () => {
   // Handle withdraw from trading pool
   const handleWithdrawFromPool = async () => {
     if (!withdrawAmount) return;
-    
+
     setIsLoading(true);
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       console.log(`Withdrawing ${withdrawAmount} from trading pool`);
-      
+
       setSuccessMessage(`Successfully withdrew ${withdrawAmount} from trading pool!`);
       setShowSuccess(true);
-      
+
       // Reset form after delay
       setTimeout(() => {
         setWithdrawAmount('');
@@ -396,9 +440,8 @@ const Page = () => {
               {RECENT_TRANSACTIONS.map((tx) => (
                 <div key={tx.id} className="flex items-center justify-between p-3 bg-background rounded-lg border border-crypto-border">
                   <div className="flex items-center space-x-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      tx.type === 'received' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                    }`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.type === 'received' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                      }`}>
                       {tx.type === 'received' ? <ArrowUpDown className="w-4 h-4" /> : <Send className="w-4 h-4" />}
                     </div>
                     <div>
@@ -464,8 +507,8 @@ const Page = () => {
 
             {depositCardView === 'options' ? (
               <div className="space-y-3">
-                <Button 
-                  className="w-full justify-start h-16" 
+                <Button
+                  className="w-full justify-start h-16"
                   variant="outline"
                   onClick={() => handleDepositAction('buy-pulley')}
                 >
@@ -477,8 +520,8 @@ const Page = () => {
                     </div>
                   </div>
                 </Button>
-                <Button 
-                  className="w-full justify-start h-16" 
+                <Button
+                  className="w-full justify-start h-16"
                   variant="outline"
                   onClick={() => handleDepositAction('deposit-pool')}
                 >
@@ -493,9 +536,9 @@ const Page = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setDepositCardView('options')}
                   className="mb-2"
                 >
@@ -531,16 +574,16 @@ const Page = () => {
                       )}
                     </div>
                     <div className="flex space-x-2">
-                      <Button 
-                        onClick={handleBuyPulley} 
+                      <Button
+                        onClick={handleBuyPulley}
                         className="flex-1"
                         disabled={!isDepositAmountValid() || isLoading}
                       >
                         {isLoading ? 'Processing...' : 'Buy PUL'}
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        onClick={handleBuyPulley} 
+                      <Button
+                        variant="outline"
+                        onClick={handleBuyPulley}
                         className="flex-1"
                         disabled={!isDepositAmountValid() || isLoading}
                       >
@@ -603,8 +646,8 @@ const Page = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <Button 
-                      onClick={handleDepositToPool} 
+                    <Button
+                      onClick={handleDepositToPool}
                       className="w-full"
                       disabled={!isDepositAmountValid() || isLoading}
                     >
@@ -637,8 +680,8 @@ const Page = () => {
 
             {withdrawCardView === 'options' ? (
               <div className="space-y-3">
-                <Button 
-                  className="w-full justify-start h-16" 
+                <Button
+                  className="w-full justify-start h-16"
                   variant="outline"
                   onClick={() => handleWithdrawAction('withdraw-pool')}
                 >
@@ -650,8 +693,8 @@ const Page = () => {
                     </div>
                   </div>
                 </Button>
-                <Button 
-                  className="w-full justify-start h-16" 
+                <Button
+                  className="w-full justify-start h-16"
                   variant="outline"
                   onClick={() => handleWithdrawAction('withdraw-liquidity')}
                 >
@@ -666,9 +709,9 @@ const Page = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setWithdrawCardView('options')}
                   className="mb-2"
                 >
@@ -712,8 +755,8 @@ const Page = () => {
                         </Button>
                       ))}
                     </div>
-                    <Button 
-                      onClick={handleWithdrawFromPool} 
+                    <Button
+                      onClick={handleWithdrawFromPool}
                       className="w-full"
                       disabled={!isWithdrawAmountValid() || isLoading}
                     >
@@ -756,8 +799,8 @@ const Page = () => {
                         </Button>
                       ))}
                     </div>
-                    <Button 
-                      onClick={handleWithdrawLiquidity} 
+                    <Button
+                      onClick={handleWithdrawLiquidity}
                       className="w-full"
                       disabled={!isWithdrawAmountValid()}
                     >

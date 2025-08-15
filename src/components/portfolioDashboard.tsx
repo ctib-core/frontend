@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { ChevronDown, Plus, Minus, Wallet, Zap } from "lucide-react";
 import { useQuery } from '@tanstack/react-query';
-import { 
-  fetchWalletBalances, 
+import {
+  fetchWalletBalances,
   fetchPortfolioOverview,
   validateApiKey,
   initializeWallet,
@@ -18,7 +18,7 @@ import React from 'react';
 const PortfolioDashboard = () => {
   // Check if API key is configured (client-side only)
   const [hasApiKey, setHasApiKey] = React.useState(false);
-  
+
   React.useEffect(() => {
     setHasApiKey(validateApiKey());
   }, []);
