@@ -1,0 +1,3553 @@
+1inch Orderbook API
+POST
+https://api.1inch.dev/orderbook/v4.0/{chain}
+Include a limit order to the 1inch limit orders database
+You can send your limit orders to the 1inch database and then your order will participate in the 1inch aggregation protocol.
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+Request Body
+Content type
+application/json
+Click in to adjust the request body:
+  {
+  "orderHash": "string",
+  "signature": "string",
+  "data": {
+    "makerAsset": "string",
+    "takerAsset": "string",
+    "maker": "string",
+    "receiver": "0x0000000000000000000000000000000000000000",
+    "makingAmount": "string",
+    "takingAmount": "string",
+    "salt": "string",
+    "extension": "0x",
+    "makerTraits": "0"
+  }
+}
+Request Body Schema:
+LimitOrderV4Request
+object
+orderHash
+*
+string
+signature
+*
+string
+data
+*
+any
+allOf[0]
+LimitOrderV4Data
+object
+makerAsset
+*
+string
+takerAsset
+*
+string
+maker
+*
+string
+receiver
+string
+makingAmount
+*
+string
+takingAmount
+*
+string
+salt
+*
+string
+extension
+string
+makerTraits
+string
+swagger.response
+Code: 201
+The limit order has been successfully saved
+Schema:
+LimitOrderV4Response
+object
+success
+*
+boolean
+Code: 400
+Input data is invalid
+Schema:
+object
+statusCode
+integer (Enum)
+400
+message
+string
+error
+string (Enum)
+Bad Request
+Code: 403
+Max valid orders per user: 100. Cancel previous orders to create new ones
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/orderbook/v4.0/1";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+  const body = {
+    orderHash: "string",
+    signature: "string",
+    data: {
+      makerAsset: "string",
+      takerAsset: "string",
+      maker: "string",
+      receiver: "0x0000000000000000000000000000000000000000",
+      makingAmount: "string",
+      takingAmount: "string",
+      salt: "string",
+      extension: "0x",
+      makerTraits: "0",
+    },
+  };
+
+  try {
+    const response = await axios.post(url, body, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Orderbook API
+GET
+https://api.1inch.dev/orderbook/v4.0/{chain}/address/{address}
+Get limit orders belonging to the specified address
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+address
+string
+*
+(path)
+address in hexadecimal format
+0x1234567890ABCDEF1234567890ABCDEF12345678
+page
+number
+(query)
+Pagination step, default: 1 (page = offset / limit)
+1
+limit
+integer
+(query)
+Number of limit orders to receive (default: 100, max: 500)
+100
+statuses
+string
+(query)
+A comma-separated list of statuses by which limit orders will be filtered. Valid statuses include: 1 - Valid orders, 2 - Temporarily invalid orders, 3 - Invalid orders.
+1,2,3
+sortBy
+string
+(query)
+ 
+takerAsset
+string
+(query)
+Address of the taker asset
+0x1234567890ABCDEF1234567890ABCDEF12345678
+makerAsset
+string
+(query)
+Address of the maker asset
+0x1234567890ABCDEF1234567890ABCDEF12345678
+swagger.response
+Code: 200
+Array of queried limit orders
+Schema:
+GetLimitOrdersV4Response
+object
+signature
+*
+string
+orderHash
+*
+string
+createDateTime
+*
+string
+remainingMakerAmount
+*
+string
+makerBalance
+*
+string
+makerAllowance
+*
+string
+data
+*
+any
+allOf[0]
+LimitOrderV4Data
+object
+makerAsset
+*
+string
+takerAsset
+*
+string
+maker
+*
+string
+receiver
+string
+makingAmount
+*
+string
+takingAmount
+*
+string
+salt
+*
+string
+extension
+string
+makerTraits
+string
+makerRate
+*
+string
+takerRate
+*
+string
+isMakerContract
+*
+boolean
+orderInvalidReason
+*
+string
+Code: 400
+Input data is invalid or address is not provided
+Schema:
+object
+statusCode
+integer (Enum)
+400
+message
+string
+error
+string (Enum)
+Bad Request
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/orderbook/v4.0/1/address/0x1234567890ABCDEF1234567890ABCDEF12345678";
+
+  const config = {
+    headers: undefined,
+    params: {
+      page: 1,
+      limit: 100,
+      statuses: "1,2,3",
+      takerAsset: "0x1234567890ABCDEF1234567890ABCDEF12345678",
+      makerAsset: "0x1234567890ABCDEF1234567890ABCDEF12345678",
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Orderbook API
+GET
+https://api.1inch.dev/orderbook/v4.0/{chain}/order/{orderHash}
+Get order by the specified order hash
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+orderHash
+string
+*
+(path)
+OrderHash of the order
+swagger.response
+Code: 400
+Input data is invalid
+Schema:
+object
+statusCode
+integer (Enum)
+400
+message
+string
+error
+string (Enum)
+Bad Request
+Code: default
+Get order by order hash
+Schema:
+GetLimitOrdersV4Response
+object
+signature
+*
+string
+orderHash
+*
+string
+createDateTime
+*
+string
+remainingMakerAmount
+*
+string
+makerBalance
+*
+string
+makerAllowance
+*
+string
+data
+*
+any
+allOf[0]
+LimitOrderV4Data
+object
+makerAsset
+*
+string
+takerAsset
+*
+string
+maker
+*
+string
+receiver
+string
+makingAmount
+*
+string
+takingAmount
+*
+string
+salt
+*
+string
+extension
+string
+makerTraits
+string
+makerRate
+*
+string
+takerRate
+*
+string
+isMakerContract
+*
+boolean
+orderInvalidReason
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/orderbook/v4.0/1/order/{orderHash}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Orderbook API
+GET
+https://api.1inch.dev/orderbook/v4.0/{chain}/all
+Get all limit orders
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+page
+number
+(query)
+Pagination step, default: 1 (page = offset / limit)
+1
+limit
+integer
+(query)
+Number of limit orders to receive (default: 100, max: 500)
+100
+statuses
+string
+(query)
+A comma-separated list of statuses by which limit orders will be filtered. Valid statuses include: 1 - Valid orders, 2 - Temporarily invalid orders, 3 - Invalid orders.
+1,2,3
+sortBy
+string
+(query)
+ 
+takerAsset
+string
+(query)
+Address of the taker asset
+0x1234567890ABCDEF1234567890ABCDEF12345678
+makerAsset
+string
+(query)
+Address of the maker asset
+0x1234567890ABCDEF1234567890ABCDEF12345678
+swagger.response
+Code: 200
+Array of queried limit orders
+Schema:
+array
+items
+GetLimitOrdersV4Response
+object
+signature
+*
+string
+orderHash
+*
+string
+createDateTime
+*
+string
+remainingMakerAmount
+*
+string
+makerBalance
+*
+string
+makerAllowance
+*
+string
+data
+*
+any
+allOf[0]
+LimitOrderV4Data
+object
+makerAsset
+*
+string
+takerAsset
+*
+string
+maker
+*
+string
+receiver
+string
+makingAmount
+*
+string
+takingAmount
+*
+string
+salt
+*
+string
+extension
+string
+makerTraits
+string
+makerRate
+*
+string
+takerRate
+*
+string
+isMakerContract
+*
+boolean
+orderInvalidReason
+*
+string
+Code: 400
+Input data is invalid
+Schema:
+object
+statusCode
+integer (Enum)
+400
+message
+string
+error
+string (Enum)
+Bad Request
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/orderbook/v4.0/1/all";
+
+  const config = {
+    headers: undefined,
+    params: {
+      page: 1,
+      limit: 100,
+      statuses: "1,2,3",
+      takerAsset: "0x1234567890ABCDEF1234567890ABCDEF12345678",
+      makerAsset: "0x1234567890ABCDEF1234567890ABCDEF12345678",
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Orderbook API
+GET
+https://api.1inch.dev/orderbook/v4.0/{chain}/events/{orderHash}
+Get fill/cancel events related to the specified order
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+orderHash
+string
+*
+(path)
+OrderHash of the order
+swagger.response
+Code: 400
+Input data is invalid
+Schema:
+object
+statusCode
+integer (Enum)
+400
+message
+string
+error
+string (Enum)
+Bad Request
+Code: default
+Get events by order hash
+Schema:
+object
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/orderbook/v4.0/1/events/{orderHash}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Orderbook API
+GET
+https://api.1inch.dev/orderbook/v4.0/{chain}/events
+Get all orders fill/cancel events
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+limit
+integer
+(query)
+limit to get events, max 1000
+100
+swagger.response
+Code: default
+Get events by order hash
+Schema:
+array
+items
+GetEventsV4Response
+object
+id
+*
+number
+network
+*
+number
+logId
+*
+string
+version
+*
+number
+action
+*
+string
+orderHash
+*
+string
+taker
+*
+string
+remainingMakerAmount
+*
+string
+transactionHash
+*
+string
+blockNumber
+*
+number
+createDateTime
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/orderbook/v4.0/1/events";
+
+  const config = {
+    headers: undefined,
+    params: {
+      limit: 100,
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Orderbook API
+GET
+https://api.1inch.dev/orderbook/v4.0/{chain}/has-active-orders-with-permit/{walletAddress}/{token}
+Get all active orders which have permit for the specified wallet address and token
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+walletAddress
+string
+*
+(path)
+token
+string
+*
+(path)
+address in hexadecimal format
+0x1234567890ABCDEF1234567890ABCDEF12345678
+address
+string
+*
+(path)
+address in hexadecimal format
+0x1234567890ABCDEF1234567890ABCDEF12345678
+swagger.response
+Code: 400
+Input data is invalid
+Schema:
+object
+statusCode
+integer (Enum)
+400
+message
+string
+error
+string (Enum)
+Bad Request
+Code: default
+Schema:
+GetHasActiveOrdersWithPermitV4Response
+object
+result
+*
+boolean
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/orderbook/v4.0/1/has-active-orders-with-permit/{walletAddress}/0x1234567890ABCDEF1234567890ABCDEF12345678";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Orderbook API
+GET
+https://api.1inch.dev/orderbook/v4.0/{chain}/unique-active-pairs
+Get unique active token pairs
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+page
+number
+(query)
+Pagination step, default: 1 (page = offset / limit)
+1
+limit
+integer
+(query)
+Number of limit orders to receive (default: 100, max: 500)
+100
+swagger.response
+Code: 400
+Input data is invalid
+Schema:
+object
+statusCode
+integer (Enum)
+400
+message
+string
+error
+string (Enum)
+Bad Request
+Code: default
+Schema:
+GetActiveUniquePairsResponse
+object
+meta
+*
+Meta
+object
+totalItems
+*
+number
+itemsPerPage
+*
+number
+totalPages
+*
+number
+currentPage
+*
+number
+items
+*
+array
+items
+UniquePairs
+object
+makerAsset
+*
+string
+takerAsset
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/orderbook/v4.0/1/unique-active-pairs";
+
+  const config = {
+    headers: undefined,
+    params: {
+      page: 1,
+      limit: 100,
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Orderbook API
+GET
+https://api.1inch.dev/orderbook/v4.0/{chain}/fee-info
+Get calculated making amount on trading pair by provided amount
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+makerAsset
+string
+*
+(query)
+Maker asset address
+0x459086f2376525bdceba5bdda135e4e9d3fef5bf
+takerAsset
+string
+*
+(query)
+Taker asset address
+0xdac17f958d2ee523a2206206994597c13d831ec7
+makerAmount
+string
+(query)
+Amount to calculate fee on trading pair
+1000000000000000000
+takerAmount
+string
+(query)
+Amount to calculate fee on trading pair
+1000000000000000000
+swagger.response
+Code: default
+fee info including whitelisted resolvers, fee in bps and whitelisted discount percent
+Schema:
+FeeInfoResponse
+object
+whitelist
+*
+any
+allOf[0]
+WhitelistedResolvers
+object
+feeBps
+*
+number
+whitelistDiscountPercent
+*
+number
+protocolFeeReceiver
+*
+any
+allOf[0]
+AccountAddress
+object
+extensionAddress
+*
+any
+allOf[0]
+AccountAddress
+object
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/orderbook/v4.0/1/fee-info";
+
+  const config = {
+    headers: undefined,
+    params: {
+      makerAsset: "0x459086f2376525bdceba5bdda135e4e9d3fef5bf",
+      takerAsset: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      makerAmount: "1000000000000000000",
+      takerAmount: "1000000000000000000",
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Balance API
+GET
+https://api.1inch.dev/balance/v1.2/{chain}/aggregatedBalancesAndAllowances/{spender}
+Get balances and allowances by spender for list of wallets addresses
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+spender
+string
+*
+(path)
+wallets
+array
+*
+(query)
+List of wallet addresses
+filterEmpty
+boolean
+(query)
+Filter out empty balances and allowances
+ 
+swagger.response
+Code: 200
+Aggregated balances and allowances by tokens
+Schema:
+array
+items
+AggregatedBalancesAndAllowancesResponse
+object
+decimals
+*
+number
+symbol
+*
+string
+tags
+*
+array
+items
+string
+address
+*
+string
+name
+*
+string
+logoURI
+*
+string
+isCustom
+*
+boolean
+wallets
+*
+object
+type
+*
+string
+tracked
+boolean
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/balance/v1.2/1/aggregatedBalancesAndAllowances/{spender}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Balance API
+GET
+https://api.1inch.dev/balance/v1.2/{chain}/balances/{walletAddress}
+Get balances of tokens for walletAddress
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+walletAddress
+string
+*
+(path)
+swagger.response
+Code: 200
+Get address balances
+Schema:
+object
+Code: 400
+The provided input data is invalid
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/balance/v1.2/1/balances/{walletAddress}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Balance API
+POST
+https://api.1inch.dev/balance/v1.2/{chain}/balances/{walletAddress}
+Get balances of custom tokens for walletAddress
+Takes wallet address and provided tokens and provides balance of each token
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+walletAddress
+string
+*
+(path)
+Request Body
+Content type
+application/json
+Click in to adjust the request body:
+  {
+  "tokens": [
+    "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  ]
+}
+Request Body Schema:
+CustomTokensRequest
+object
+tokens
+*
+array
+items
+string
+swagger.response
+Code: 200
+Get address balances by provided tokens
+Schema:
+object
+Code: 400
+The provided input data is invalid
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/balance/v1.2/1/balances/{walletAddress}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+  const body = {
+    tokens: ["0xdac17f958d2ee523a2206206994597c13d831ec7"],
+  };
+
+  try {
+    const response = await axios.post(url, body, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Balance API
+POST
+https://api.1inch.dev/balance/v1.2/{chain}/balances/multiple/walletsAndTokens
+Get balances of custom tokens for list of wallets addresses
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+Request Body
+Content type
+application/json
+Click in to adjust the request body:
+  {
+  "tokens": [
+    "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  ],
+  "wallets": [
+    "0x7A1284A7fc85635B79BCd1C45089A0ddde05C7C0"
+  ]
+}
+Request Body Schema:
+CustomTokensAndWalletsRequest
+object
+tokens
+*
+array
+items
+string
+wallets
+*
+array
+items
+string
+swagger.response
+Code: 200
+Get address balances by provided tokens
+Schema:
+object
+Code: 400
+The provided input data is invalid
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/balance/v1.2/1/balances/multiple/walletsAndTokens";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+  const body = {
+    tokens: ["0xdac17f958d2ee523a2206206994597c13d831ec7"],
+    wallets: ["0x7A1284A7fc85635B79BCd1C45089A0ddde05C7C0"],
+  };
+
+  try {
+    const response = await axios.post(url, body, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Balance API
+GET
+https://api.1inch.dev/balance/v1.2/{chain}/allowancesAndBalances/{spender}/{walletAddress}
+Get balances and allowances of tokens by spender for walletAddress
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+spender
+string
+*
+(path)
+walletAddress
+string
+*
+(path)
+swagger.response
+Code: 200
+Get address balances and allowances
+Schema:
+object
+Code: 400
+The provided input data is invalid
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/balance/v1.2/1/allowancesAndBalances/{spender}/{walletAddress}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Balance API
+POST
+https://api.1inch.dev/balance/v1.2/{chain}/allowancesAndBalances/{spender}/{walletAddress}
+Get balances and allowances of custom tokens by spender for walletAddress
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+spender
+string
+*
+(path)
+Spender address
+walletAddress
+string
+*
+(path)
+Wallet address
+Request Body
+Content type
+application/json
+Click in to adjust the request body:
+  {
+  "tokens": [
+    "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  ]
+}
+Request Body Schema:
+CustomTokensRequest
+object
+tokens
+*
+array
+items
+string
+swagger.response
+Code: 200
+Get address balances and allowances
+Schema:
+object
+Code: 400
+The provided input data is invalid
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/balance/v1.2/1/allowancesAndBalances/{spender}/{walletAddress}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+  const body = {
+    tokens: ["0xdac17f958d2ee523a2206206994597c13d831ec7"],
+  };
+
+  try {
+    const response = await axios.post(url, body, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Gas Price API
+GET
+https://api.1inch.dev/gas-price/v1.6/{chain}
+Gas Price from network
+Get Gas Price info from network
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+swagger.response
+Code: 200
+GasPrice
+Schema:
+Eip1559GasPriceResponse
+object
+baseFee
+*
+string
+low
+*
+Eip1559GasValueResponse
+object
+maxPriorityFeePerGas
+*
+string
+maxFeePerGas
+*
+string
+medium
+*
+Eip1559GasValueResponse
+object
+maxPriorityFeePerGas
+*
+string
+maxFeePerGas
+*
+string
+high
+*
+Eip1559GasValueResponse
+object
+maxPriorityFeePerGas
+*
+string
+maxFeePerGas
+*
+string
+instant
+*
+Eip1559GasValueResponse
+object
+maxPriorityFeePerGas
+*
+string
+maxFeePerGas
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/gas-price/v1.6/1";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Tokens API
+GET
+https://api.1inch.dev/token/v1.2/{chainId}/custom
+Get many tokens
+Get tokens info
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chainId
+number
+*
+(path)
+1
+addresses
+array
+*
+(query)
+swagger.response
+Code: 200
+Tokens info map
+Schema:
+object
+0x111111111117dc0aa78b770fa6a738034120c302
+TokenInfoDto
+object
+address
+*
+string
+chainId
+*
+number
+decimals
+*
+number
+extensions
+object
+logoURI
+*
+string
+name
+*
+string
+symbol
+*
+string
+tags
+*
+array
+items
+string
+Code: 400
+Invalid chain ID or address
+Schema:
+BadRequestErrorDto
+object
+statusCode
+*
+number
+message
+*
+string
+error
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/token/v1.2/1/custom";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Tokens API
+GET
+https://api.1inch.dev/token/v1.3/{chainId}/custom
+Get many tokens
+Get tokens info
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chainId
+number
+*
+(path)
+1
+addresses
+array
+*
+(query)
+swagger.response
+Code: 200
+Tokens info map
+Schema:
+object
+0x111111111117dc0aa78b770fa6a738034120c302
+TokenInfoDto
+object
+address
+*
+string
+chainId
+*
+number
+decimals
+*
+number
+extensions
+object
+logoURI
+*
+string
+name
+*
+string
+symbol
+*
+string
+tags
+*
+array
+items
+string
+Code: 400
+Invalid chain ID or address
+Schema:
+BadRequestErrorDto
+object
+statusCode
+*
+number
+message
+*
+string
+error
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/token/v1.3/1/custom";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Tokens API
+GET
+https://api.1inch.dev/token/v1.4/{chainId}/custom
+Get many tokens
+Get tokens info
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chainId
+number
+*
+(path)
+1
+addresses
+array
+*
+(query)
+swagger.response
+Code: 200
+Tokens info map
+Schema:
+object
+0x111111111117dc0aa78b770fa6a738034120c302
+TokenInfoDto
+object
+address
+*
+string
+chainId
+*
+number
+decimals
+*
+number
+extensions
+object
+logoURI
+*
+string
+name
+*
+string
+symbol
+*
+string
+tags
+*
+array
+items
+string
+Code: 400
+Invalid chain ID or address
+Schema:
+BadRequestErrorDto
+object
+statusCode
+*
+number
+message
+*
+string
+error
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/token/v1.4/1/custom";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Tokens API
+GET
+https://api.1inch.dev/token/v1.2/{chainId}/custom/{address}
+Get single token
+Get token info
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chainId
+number
+*
+(path)
+1
+address
+string
+*
+(path)
+0x111111111117dc0aa78b770fa6a738034120c302
+swagger.response
+Code: 200
+Token info
+Schema:
+TokenDto
+object
+chainId
+*
+number
+symbol
+*
+string
+name
+*
+string
+address
+*
+string
+decimals
+*
+number
+logoURI
+string
+rating
+*
+number
+eip2612
+boolean
+isFoT
+boolean
+tags
+*
+array
+items
+TagDto
+object
+provider
+*
+string
+value
+*
+string
+providers
+*
+array
+items
+string
+Code: 400
+Invalid chain ID or address
+Schema:
+BadRequestErrorDto
+object
+statusCode
+*
+number
+message
+*
+string
+error
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/token/v1.2/1/custom/0x111111111117dc0aa78b770fa6a738034120c302";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Tokens API
+GET
+https://api.1inch.dev/token/v1.3/{chainId}/custom/{address}
+Get single token
+Get token info
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chainId
+number
+*
+(path)
+1
+address
+string
+*
+(path)
+0x111111111117dc0aa78b770fa6a738034120c302
+swagger.response
+Code: 200
+Token info
+Schema:
+TokenDto
+object
+chainId
+*
+number
+symbol
+*
+string
+name
+*
+string
+address
+*
+string
+decimals
+*
+number
+logoURI
+string
+rating
+*
+number
+eip2612
+boolean
+isFoT
+boolean
+tags
+*
+array
+items
+TagDto
+object
+provider
+*
+string
+value
+*
+string
+providers
+*
+array
+items
+string
+Code: 400
+Invalid chain ID or address
+Schema:
+BadRequestErrorDto
+object
+statusCode
+*
+number
+message
+*
+string
+error
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/token/v1.3/1/custom/0x111111111117dc0aa78b770fa6a738034120c302";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+1inch Tokens API
+GET
+https://api.1inch.dev/token/v1.4/{chainId}/custom/{address}
+Get single token
+Get token info
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chainId
+number
+*
+(path)
+1
+address
+string
+*
+(path)
+0x111111111117dc0aa78b770fa6a738034120c302
+swagger.response
+Code: 200
+Token info
+Schema:
+TokenDto
+object
+chainId
+*
+number
+symbol
+*
+string
+name
+*
+string
+address
+*
+string
+decimals
+*
+number
+logoURI
+string
+rating
+*
+number
+eip2612
+boolean
+isFoT
+boolean
+tags
+*
+array
+items
+TagDto
+object
+provider
+*
+string
+value
+*
+string
+providers
+*
+array
+items
+string
+Code: 400
+Invalid chain ID or address
+Schema:
+BadRequestErrorDto
+object
+statusCode
+*
+number
+message
+*
+string
+error
+*
+string
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/token/v1.4/1/custom/0x111111111117dc0aa78b770fa6a738034120c302";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+Introduction
+The Transaction Gateway API provides reliable on-chain transaction broadcasting, supporting both public and private modes. This enables developers to choose the most appropriate broadcasting method for their use case, whether for general public transactions or for sensitive, protected transactions in a private mempool. Ideal for applications focused on security and efficiency, the Transaction Gateway API is a powerful tool for wallets, exchanges, and virtually any on-chain application.
+
+Supported networks
+Ethereum Mainnet
+Arbitrum
+Avalanche
+BNB Chain
+Gnosis
+Solana
+Sonic
+Optimism
+Polygon
+zkSync Era
+Base
+Unichain
+Why use the Transaction Gateway API?
+The Transaction Gateway API offers several key advantages:
+
+Private broadcasting: provides a secure way to broadcast transactions to a private mempool, offering protection against front-running and ensuring increased transaction privacy.
+Flexible broadcasting modes: supports both public and private transaction broadcasting, allowing users to choose the method that best fits their needs.
+Reliable performance: ensures robust transaction delivery, even under high-volume scenarios, making it suitable for fast-paced trading environments.
+Integration possibilities
+The Transaction Gateway API can be integrated into a wide range of applications, including:
+
+Wallets
+Exchanges and meta-aggregators
+Traders and arbitrage bots
+DeFi platforms and lending protocols
+NFT marketplaces
+Payment processors and merchant tools
+
+
+1inch Transaction Gateway API
+POST
+https://api.1inch.dev/tx-gateway/v1.1/{chain}/broadcast
+Broadcast public transaction
+Takes the raw transaction data as input and returns the transaction hash in case of Evm Chains and transaction signature in case of Solana
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+Request Body
+Content type
+application/json
+Click in to adjust the request body:
+  {
+  "rawTransaction": "0x123..."
+}
+Request Body Schema:
+BroadcastRequest
+object
+rawTransaction
+*
+string
+swagger.response
+Code: 200
+The transaction was successfully broadcasted
+Schema:
+BroadcastResponse
+object
+transactionHash
+*
+string
+Code: 400
+The provided input data is invalid
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/tx-gateway/v1.1/1/broadcast";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+  const body = {
+    rawTransaction: "0x123...",
+  };
+
+  try {
+    const response = await axios.post(url, body, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Transaction Gateway API
+POST
+https://api.1inch.dev/tx-gateway/v1.1/{chain}/flashbots
+Broadcast private transaction
+Takes the raw transaction data as input and broadcasts it privately, only available for Ethereum network
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+1
+Request Body
+Content type
+application/json
+Click in to adjust the request body:
+  {
+  "rawTransaction": "0x123..."
+}
+Request Body Schema:
+BroadcastRequest
+object
+rawTransaction
+*
+string
+swagger.response
+Code: 200
+The transaction was successfully broadcasted
+Schema:
+BroadcastResponse
+object
+transactionHash
+*
+string
+Code: 400
+The provided input data is invalid
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/tx-gateway/v1.1/1/flashbots";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+  const body = {
+    rawTransaction: "0x123...",
+  };
+
+  try {
+    const response = await axios.post(url, body, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Charts API
+GET
+https://api.1inch.dev/charts/v1.0/chart/line/{token0}/{token1}/{period}/{chainId}
+Allows to get historical line chart data for specific token pair and period
+Network
+[object Object]
+EthereumEthereum
+Parameters
+token0
+string
+*
+(path)
+Base token address
+token1
+string
+*
+(path)
+Quote token address
+period
+string
+*
+(path)
+Period. Supported periods: 24H ,1W ,1M ,1Y ,AllTime
+ 
+chainId
+number
+*
+(path)
+Supported chain: 1/56/137/42161/43114/100/10/8453/324/59144/146/130
+1
+1
+swagger.response
+Code: 200
+Schema:
+LinesResponse
+object
+data
+*
+array
+items
+Line
+object
+time
+*
+number
+value
+*
+number
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/charts/v1.0/chart/line/{token0}/{token1}/{period}/1";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+1inch Charts API
+GET
+https://api.1inch.dev/charts/v1.0/chart/aggregated/candle/{token0}/{token1}/{seconds}/{chainId}
+Allows to get historical candle chart data for specific token pair and period
+Network
+[object Object]
+EthereumEthereum
+Parameters
+token0
+string
+*
+(path)
+Base token address
+token1
+string
+*
+(path)
+Quote token address
+seconds
+number
+*
+(path)
+Period in seconds. Supported seconds: 300 ,900 ,3600 ,14400 ,86400 ,604800
+ 
+chainId
+number
+*
+(path)
+Supported chain: 1/56/137/42161/43114/100/10/8453/324/59144/146/130
+1
+1
+swagger.response
+Code: 200
+Schema:
+CandlesResponse
+object
+data
+*
+array
+items
+Candle
+object
+time
+*
+number
+open
+*
+number
+high
+*
+number
+low
+*
+number
+close
+*
+number
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/charts/v1.0/chart/aggregated/candle/{token0}/{token1}/{seconds}/1";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+Token-details API
+GET
+https://api.1inch.dev/token-details/v1.0/details/{chain}
+Returns details for native token
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+Chain id of network
+Example: 1
+1
+provider
+string
+(query)
+name of chart provider (optional)
+ 
+swagger.response
+Code: 200
+Return token info
+Schema:
+InfoDataResponse
+object
+assets
+*
+AssetsResponse
+object
+name
+*
+string
+website
+*
+string
+sourceCode
+*
+string
+whitePaper
+*
+string
+description
+*
+string
+shortDescription
+*
+string
+research
+*
+string
+explorer
+*
+string
+social_links
+*
+SocialLink
+object
+name
+*
+string
+url
+*
+string
+handle
+*
+string
+details
+*
+DetailsResponse
+object
+provider
+*
+string
+providerURL
+*
+string
+vol24
+*
+number
+marketCap
+*
+number
+circulatingSupply
+*
+number
+totalSupply
+*
+number
+Code: 500
+Fatal server error
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/token-details/v1.0/details/1";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+Token-details API
+GET
+https://api.1inch.dev/token-details/v1.0/details/{chain}/{contractAddress}
+Returns details for token
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+Chain id of network
+Example: 1
+1
+contractAddress
+string
+*
+(path)
+Address of contract
+Example: 0x111111111117dC0aa78b770fA6A738034120C302
+provider
+string
+(query)
+name of chart provider (optional)
+ 
+swagger.response
+Code: 200
+Return token info
+Schema:
+InfoDataResponse
+object
+assets
+*
+AssetsResponse
+object
+name
+*
+string
+website
+*
+string
+sourceCode
+*
+string
+whitePaper
+*
+string
+description
+*
+string
+shortDescription
+*
+string
+research
+*
+string
+explorer
+*
+string
+social_links
+*
+SocialLink
+object
+name
+*
+string
+url
+*
+string
+handle
+*
+string
+details
+*
+DetailsResponse
+object
+provider
+*
+string
+providerURL
+*
+string
+vol24
+*
+number
+marketCap
+*
+number
+circulatingSupply
+*
+number
+totalSupply
+*
+number
+Code: 500
+Fatal server error
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/token-details/v1.0/details/1/{contractAddress}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+Token-details API
+GET
+https://api.1inch.dev/token-details/v1.0/charts/range/{chain}
+Returns historical native chain token prices at USD by time range
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+Chain id of network
+Example: 1
+1
+from
+number
+*
+(query)
+unix time at sec
+Example: 1622200267
+to
+number
+*
+(query)
+unix time at sec
+Example: 1622203867
+provider
+string
+(query)
+name of chart provider (optional)
+ 
+from_time
+number
+(query)
+from time (optional)
+Example: 1658841720
+swagger.response
+Code: 200
+Return chart data
+Schema:
+ChartDataResponse
+object
+d
+*
+array
+items
+ChartPointResponse
+object
+t
+*
+number
+v
+*
+number
+p
+*
+string
+Code: 500
+Fatal server error
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/token-details/v1.0/charts/range/1";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+Token-details API
+GET
+https://api.1inch.dev/token-details/v1.0/charts/range/{chain}/{tokenAddress}
+Returns historical token prices at USD by time range
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+Chain id of network
+Example: 1
+1
+tokenAddress
+string
+*
+(path)
+Address of token contract
+Example: 0x111111111117dC0aa78b770fA6A738034120C302
+from
+number
+*
+(query)
+unix time at sec
+Example: 1622200267
+to
+number
+*
+(query)
+unix time at sec
+Example: 1622203867
+provider
+string
+(query)
+name of chart provider (optional)
+ 
+from_time
+number
+(query)
+from time (optional)
+Example: 1658841720
+swagger.response
+Code: 200
+Return chart data
+Schema:
+ChartDataResponse
+object
+d
+*
+array
+items
+ChartPointResponse
+object
+t
+*
+number
+v
+*
+number
+p
+*
+string
+Code: 500
+Fatal server error
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/token-details/v1.0/charts/range/1/{tokenAddress}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+Token-details API
+GET
+https://api.1inch.dev/token-details/v1.0/charts/interval/{chain}
+Returns historical native chain token prices at USD by time interval
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+Chain id of network
+Example: 1
+1
+interval
+string
+*
+(query)
+eg. 24h,3d,14d,max
+Example: 24h
+ 
+provider
+string
+(query)
+name of chart provider (optional)
+ 
+from_time
+number
+(query)
+from time (optional)
+Example: 1658841720
+swagger.response
+Code: 200
+Return chart data
+Schema:
+ChartDataResponse
+object
+d
+*
+array
+items
+ChartPointResponse
+object
+t
+*
+number
+v
+*
+number
+p
+*
+string
+Code: 500
+Fatal server error
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/token-details/v1.0/charts/interval/1";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+Token-details API
+GET
+https://api.1inch.dev/token-details/v1.0/charts/interval/{chain}/{tokenAddress}
+Returns historical token prices at USD by time interval
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+Chain id of network
+Example: 1
+1
+tokenAddress
+string
+*
+(path)
+Address of token contract
+Example: 0x111111111117dC0aa78b770fA6A738034120C302
+interval
+string
+*
+(query)
+eg. 24h,3d,14d,max
+Example: 24h
+ 
+provider
+string
+(query)
+name of chart provider (optional)
+ 
+from_time
+number
+(query)
+from time (optional)
+Example: 1658841720
+swagger.response
+Code: 200
+Return chart data
+Schema:
+ChartDataResponse
+object
+d
+*
+array
+items
+ChartPointResponse
+object
+t
+*
+number
+v
+*
+number
+p
+*
+string
+Code: 500
+Fatal server error
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/token-details/v1.0/charts/interval/1/{tokenAddress}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+Token-details API
+GET
+https://api.1inch.dev/token-details/v1.0/prices/change/{chain}
+Returns native token price change by interval
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+Chain id of network
+Example: 1
+1
+interval
+string
+*
+(query)
+eg. 24h,3d,14d,max
+Example: 24h
+ 
+swagger.response
+Code: 200
+Return chart data
+Schema:
+TokenPriceChangeResponseDto
+object
+inUSD
+*
+number
+inPercent
+*
+number
+Code: 500
+Fatal server error
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/token-details/v1.0/prices/change/1";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+Token-details API
+POST
+https://api.1inch.dev/token-details/v1.0/prices/change/{chain}
+Returns token price change by interval for a list of tokens
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+Chain id of network
+Example: 1
+1
+Request Body
+Content type
+application/json
+Click in to adjust the request body:
+  {
+  "tokenAddresses": [
+    "0x111111111117dC0aa78b770fA6A738034120C302",
+    "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
+  ],
+  "interval": "24h"
+}
+Request Body Schema:
+GetTokenListPriceRequestDto
+object
+tokenAddresses
+*
+array
+items
+string
+interval
+*
+string (Enum)
+5m
+10m
+15m
+30m
+50m
+1h
+2h
+3h
+4h
+6h
+12h
+24h
+2d
+3d
+7d
+14d
+15d
+30d
+60d
+90d
+365d
+max
+swagger.response
+Code: 200
+Token price changes over the given interval
+Schema:
+array
+items
+TokenListPriceChangeResponseDto
+object
+tokenAddress
+*
+string
+inUSD
+*
+number
+inPercent
+*
+number
+Code: 400
+If data format is invalid or there are validation errors
+Code: 404
+If one or more tokens were not found in the price listings
+Code: 500
+Fatal server error
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url = "https://api.1inch.dev/token-details/v1.0/prices/change/1";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+  const body = {
+    tokenAddresses: [
+      "0x111111111117dC0aa78b770fA6A738034120C302",
+      "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+    ],
+    interval: "24h",
+  };
+
+  try {
+    const response = await axios.post(url, body, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.
+
+
+
+Token-details API
+GET
+https://api.1inch.dev/token-details/v1.0/prices/change/{chain}/{tokenAddress}
+Returns token price change by interval
+Network
+[object Object]
+EthereumEthereum
+Parameters
+chain
+number
+*
+(path)
+Chain id of network
+Example: 1
+1
+tokenAddress
+string
+*
+(path)
+Address of token contract
+Example: 0x111111111117dC0aa78b770fA6A738034120C302
+interval
+string
+*
+(query)
+eg. 24h,3d,14d,max
+Example: 24h
+ 
+swagger.response
+Code: 200
+Return chart data
+Schema:
+TokenPriceChangeResponseDto
+object
+inUSD
+*
+number
+inPercent
+*
+number
+Code: 500
+Fatal server error
+Authorization - API KEY
+Sign in for automatic API key authentication.
+
+NodeJS
+
+Python
+
+cURL
+
+Go
+const axios = require("axios");
+
+async function httpCall() {
+  const url =
+    "https://api.1inch.dev/token-details/v1.0/prices/change/1/{tokenAddress}";
+
+  const config = {
+    headers: undefined,
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+Response
+Click the try-it button to test your API call and see the real-time response right here.

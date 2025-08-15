@@ -5,9 +5,13 @@ import ReactQueryProvider from "@/components/ReactQueryProvider";
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <ReactQueryProvider>
-      <div className="flex h-screen fixed bg-background w-full shrink">
-        <Sidebar />
-        {children}
+      <div className="flex h-screen bg-background w-full overflow-hidden">
+        <div className="w-64 flex-shrink-0">
+          <Sidebar />
+        </div>
+        <div className="flex-1 overflow-y-auto min-h-0 bg-background">
+          {children}
+        </div>
       </div>
     </ReactQueryProvider>
   );

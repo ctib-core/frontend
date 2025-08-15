@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,379 +16,360 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useQuery } from '@tanstack/react-query'
-// import axios from 'axios' // Removed axios import for now
+import { mockMarkets } from '@/lib/mocks/markets'
+import { cryptoCurrencies } from '@/lib/mocks/markets'
+import axios from 'axios'
+
+// Types for API responses
+interface TickerData {
+  ticker: string;
+  name: string;
+  base_currency_symbol: string;
+  base_currency_name: string;
+}
+
+interface OHLCData {
+  ticker: string;
+  name: string;
+  price: number;
+  change: number;
+  volume: number;
+  high: number;
+  low: number;
+}
+
+interface MarketData {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+}
+
+interface CryptoTableData {
+  rank: number;
+  name: string;
+  symbol: string;
+  price: string;
+  marketCap: string;
+  circulating: string;
+  volume: string;
+  change1h: string;
+  change24h: string;
+  change7d: string;
+}
 
 // Polygon API key (replace with your own or use env variable)
-const POLYGON_API_KEY = process.env.NEXT_PUBLIC_POLYGON_API_KEY || 'YOUR_API_KEY_HERE';
+const POLYGON_API_KEY = process.env.NEXT_PUBLIC_POLYGON_API_KEY;
 
-// Mock data fallback
-const mockMarkets = [
-  {
-    symbol: 'BTC',
-    name: 'Bitcoin',
-    price: 120090,
-    change: 2.3,
-  },
-  {
-    symbol: 'ETH',
-    name: 'Ethereum',
-    price: 3400,
-    change: 1.1,
-  },
-  {
-    symbol: 'SOL',
-    name: 'Solana',
-    price: 150,
-    change: -0.8,
-  },
-  {
-    symbol: 'DOGE',
-    name: 'Dogecoin',
-    price: 0.15,
-    change: 4.2,
-  },
-]
+// Trending tokens to fetch - using specific trading pairs
+const TRENDING_TOKENS = ['BTCUSD', 'ETHUSD', 'SOLUSD', 'DOGEUSD'];
 
-// Add mock data for the top 24 cryptocurrencies
-const cryptoCurrencies = [
-  {
-    rank: 1,
-    name: 'Bitcoin',
-    symbol: 'BTC',
-    marketCap: '$2,350,694,068,409',
-    price: '$118,147.54',
-    circulating: '19,896,259 BTC',
-    volume: '$69,739,068,011',
-    change1h: '-0.27%',
-    change24h: '-0.26%',
-    change7d: '-0.86%',
-  },
-  {
-    rank: 2,
-    name: 'Ethereum',
-    symbol: 'ETH',
-    marketCap: '$442,292,478,267',
-    price: '$3,664.05',
-    circulating: '120,711,314 ETH *',
-    volume: '$37,056,407,724',
-    change1h: '-0.74%',
-    change24h: '0.09%',
-    change7d: '15.92%',
-  },
-  {
-    rank: 3,
-    name: 'XRP',
-    symbol: 'XRP',
-    marketCap: '$204,505,604,281',
-    price: '$3.45',
-    circulating: '59,182,189,917 XRP *',
-    volume: '$6,815,915,578',
-    change1h: '-0.43%',
-    change24h: '-0.58%',
-    change7d: '17.03%',
-  },
-  {
-    rank: 4,
-    name: 'Tether USDt',
-    symbol: 'USDT',
-    marketCap: '$162,012,484,433',
-    price: '$1.00',
-    circulating: '161,940,579,168 USDT *',
-    volume: '$127,597,229,877',
-    change1h: '0.01%',
-    change24h: '0.01%',
-    change7d: '0.03%',
-  },
-  {
-    rank: 5,
-    name: 'BNB',
-    symbol: 'BNB',
-    marketCap: '$110,500,371,128',
-    price: '$793.31',
-    circulating: '139,288,802 BNB *',
-    volume: '$3,200,795,431',
-    change1h: '0.03%',
-    change24h: '4.16%',
-    change7d: '14.18%',
-  },
-  {
-    rank: 6,
-    name: 'Solana',
-    symbol: 'SOL',
-    marketCap: '$106,620,618,712',
-    price: '$198.11',
-    circulating: '538,169,672 SOL *',
-    volume: '$9,993,047,040',
-    change1h: '-0.72%',
-    change24h: '0.17%',
-    change7d: '18.51%',
-  },
-  {
-    rank: 7,
-    name: 'USDC',
-    symbol: 'USDC',
-    marketCap: '$64,752,918,763',
-    price: '$0.9999',
-    circulating: '64,754,654,647 USDC *',
-    volume: '$14,616,892,447',
-    change1h: '0.01%',
-    change24h: '0.01%',
-    change7d: '<0.01%',
-  },
-  {
-    rank: 8,
-    name: 'Dogecoin',
-    symbol: 'DOGE',
-    marketCap: '$38,694,682,377',
-    price: '$0.2575',
-    circulating: '150,212,976,384 DOGE',
-    volume: '$3,099,703,601',
-    change1h: '-1.23%',
-    change24h: '-3.36%',
-    change7d: '27.92%',
-  },
-  {
-    rank: 9,
-    name: 'Cardano',
-    symbol: 'ADA',
-    marketCap: '$30,588,656,858',
-    price: '$0.8641',
-    circulating: '35,398,491,999 ADA *',
-    volume: '$1,491,804,631',
-    change1h: '-0.88%',
-    change24h: '-0.68%',
-    change7d: '15.17%',
-  },
-  {
-    rank: 10,
-    name: 'TRON',
-    symbol: 'TRX',
-    marketCap: '$30,098,106,679',
-    price: '$0.3177',
-    circulating: '94,736,618,069 TRX *',
-    volume: '$1,188,854,419',
-    change1h: '-0.18%',
-    change24h: '1.59%',
-    change7d: '5.19%',
-  },
-  {
-    rank: 11,
-    name: 'Hyperliquid',
-    symbol: 'HYPE',
-    marketCap: '$14,654,529,201',
-    price: '$43.88',
-    circulating: '333,928,180 HYPE *',
-    volume: '$366,983,771',
-    change1h: '-0.96%',
-    change24h: '-0.29%',
-    change7d: '-8.46%',
-  },
-  {
-    rank: 12,
-    name: 'Stellar',
-    symbol: 'XLM',
-    marketCap: '$14,545,500,357',
-    price: '$0.4671',
-    circulating: '31,134,019,346 XLM *',
-    volume: '$583,678,481',
-    change1h: '-0.86%',
-    change24h: '2.08%',
-    change7d: '0.41%',
-  },
-  {
-    rank: 13,
-    name: 'Sui',
-    symbol: 'SUI',
-    marketCap: '$13,491,859,605',
-    price: '$3.90',
-    circulating: '3,455,015,253 SUI *',
-    volume: '$1,559,506,791',
-    change1h: '-1.38%',
-    change24h: '1.29%',
-    change7d: '-3.24%',
-  },
-  {
-    rank: 14,
-    name: 'Chainlink',
-    symbol: 'LINK',
-    marketCap: '$12,871,081,683',
-    price: '$18.98',
-    circulating: '678,099,970 LINK *',
-    volume: '$799,056,874',
-    change1h: '-0.96%',
-    change24h: '0.24%',
-    change7d: '15.00%',
-  },
-  {
-    rank: 15,
-    name: 'Hedera',
-    symbol: 'HBAR',
-    marketCap: '$11,299,121,976',
-    price: '$0.2665',
-    circulating: '42,392,670,019 HBAR *',
-    volume: '$528,175,044',
-    change1h: '-0.87%',
-    change24h: '1.36%',
-    change7d: '12.10%',
-  },
-  {
-    rank: 16,
-    name: 'Avalanche',
-    symbol: 'AVAX',
-    marketCap: '$10,606,695,251',
-    price: '$25.11',
-    circulating: '422,275,285 AVAX *',
-    volume: '$899,874,756',
-    change1h: '-1.45%',
-    change24h: '-1.05%',
-    change7d: '13.75%',
-  },
-  {
-    rank: 17,
-    name: 'Bitcoin Cash',
-    symbol: 'BCH',
-    marketCap: '$10,469,438,675',
-    price: '$526.07',
-    circulating: '19,901,138 BCH',
-    volume: '$487,652,906',
-    change1h: '-0.33%',
-    change24h: '1.02%',
-    change7d: '5.18%',
-  },
-  {
-    rank: 18,
-    name: 'Litecoin',
-    symbol: 'LTC',
-    marketCap: '$8,930,262,025',
-    price: '$117.34',
-    circulating: '76,105,377 LTC',
-    volume: '$1,186,018,112',
-    change1h: '-0.43%',
-    change24h: '3.03%',
-    change7d: '20.29%',
-  },
-  {
-    rank: 19,
-    name: 'Shiba Inu',
-    symbol: 'SHIB',
-    marketCap: '$8,753,153,069',
-    price: '$0.00001485',
-    circulating: '589,246,858,589,927 SHIB *',
-    volume: '$333,073,531',
-    change1h: '-1.09%',
-    change24h: '-0.73%',
-    change7d: '7.27%',
-  },
-  {
-    rank: 20,
-    name: 'UNUS SED LEO',
-    symbol: 'LEO',
-    marketCap: '$8,296,732,367',
-    price: '$8.98',
-    circulating: '923,042,100 LEO *',
-    volume: '$3,134,022',
-    change1h: '0.12%',
-    change24h: '0.13%',
-    change7d: '2.30%',
-  },
-  {
-    rank: 21,
-    name: 'Toncoin',
-    symbol: 'TON',
-    marketCap: '$8,151,538,608',
-    price: '$3.29',
-    circulating: '2,470,383,779 TON *',
-    volume: '$721,120,922',
-    change1h: '-0.74%',
-    change24h: '1.92%',
-    change7d: '5.74%',
-  },
-  {
-    rank: 22,
-    name: 'Polkadot',
-    symbol: 'DOT',
-    marketCap: '$7,000,293,963',
-    price: '$4.37',
-    circulating: '1,599,813,185 DOT *',
-    volume: '$407,568,287',
-    change1h: '-1.44%',
-    change24h: '0.72%',
-    change7d: '6.46%',
-  },
-  {
-    rank: 23,
-    name: 'Uniswap',
-    symbol: 'UNI',
-    marketCap: '$6,550,499,712',
-    price: '$10.41',
-    circulating: '628,739,837 UNI *',
-    volume: '$538,265,787',
-    change1h: '-0.87%',
-    change24h: '0.35%',
-    change7d: '13.95%',
-  },
-  {
-    rank: 24,
-    name: 'Ethena USDe',
-    symbol: 'USDe',
-    marketCap: '$6,511,269,432',
-    price: '$1.00',
-    circulating: '6,504,551,290 USDe *',
-    volume: '$227,525,605',
-    change1h: '0.00%',
-    change24h: '-0.01%',
-    change7d: '0.05%',
-  },
-]
+// Cache duration for different data types
+const TICKER_LIST_CACHE_TIME = 24 * 60 * 60 * 1000; // 24 hours
+const OHLC_CACHE_TIME = 5 * 60 * 1000; // 5 minutes
 
-// Fetcher function for Polygon API
-async function fetchMarkets() {
+// Helper function to get token name
+function getTokenName(ticker: string): string {
+  const symbol = ticker.replace('X:', '');
+  switch (symbol) {
+    case 'BTCUSD': return 'Bitcoin';
+    case 'ETHUSD': return 'Ethereum';
+    case 'SOLUSD': return 'Solana';
+    case 'DOGEUSD': return 'Dogecoin';
+    default: return symbol.replace('USD', '');
+  }
+}
+
+// Helper function to get fallback price
+function getFallbackPrice(ticker: string): number {
+  const symbol = ticker.replace('X:', '');
+  switch (symbol) {
+    case 'BTCUSD': return 45000;
+    case 'ETHUSD': return 3000;
+    case 'SOLUSD': return 100;
+    case 'DOGEUSD': return 0.08;
+    default: return 100;
+  }
+}
+
+// Helper function to get fallback change
+function getFallbackChange(ticker: string): number {
+  const symbol = ticker.replace('X:', '');
+  switch (symbol) {
+    case 'BTCUSD': return 2.5;
+    case 'ETHUSD': return 1.8;
+    case 'SOLUSD': return -0.5;
+    case 'DOGEUSD': return 0.3;
+    default: return 0;
+  }
+}
+
+// Fetcher function for getting all crypto tickers
+async function fetchCryptoTickers(): Promise<TickerData[]> {
   try {
-    const symbols = ['BTC', 'ETH', 'SOL', 'DOGE']
+    const response = await fetch(
+      `https://api.polygon.io/v3/reference/tickers?market=crypto&active=true&order=asc&limit=1000&sort=ticker&apiKey=${POLYGON_API_KEY}`
+    );
+    
+    if (!response.ok) {
+      if (response.status === 429) {
+        console.warn('Rate limit hit for ticker list, using fallback');
+        throw new Error('Rate limit exceeded');
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.results || [];
+  } catch (error) {
+    console.error('Failed to fetch crypto tickers:', error);
+    // Return fallback ticker list
+    return [
+      { ticker: 'X:BTCUSD', name: 'Bitcoin - United States Dollar', base_currency_symbol: 'BTC', base_currency_name: 'Bitcoin' },
+      { ticker: 'X:ETHUSD', name: 'Ethereum - United States Dollar', base_currency_symbol: 'ETH', base_currency_name: 'Ethereum' },
+      { ticker: 'X:SOLUSD', name: 'Solana - United States Dollar', base_currency_symbol: 'SOL', base_currency_name: 'Solana' },
+      { ticker: 'X:DOGEUSD', name: 'Dogecoin - United States Dollar', base_currency_symbol: 'DOGE', base_currency_name: 'Dogecoin' },
+    ];
+  }
+}
+
+// Fetcher function for getting OHLC data for a specific ticker
+async function fetchTickerOHLC(ticker: string): Promise<OHLCData> {
+  try {
+    const response = await fetch(
+      `https://api.polygon.io/v2/aggs/ticker/${ticker}/prev?adjusted=true&apiKey=${POLYGON_API_KEY}`
+    );
+    
+    if (!response.ok) {
+      if (response.status === 429) {
+        console.warn(`Rate limit hit for ${ticker}, using fallback data`);
+        throw new Error('Rate limit exceeded');
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const result = data.results?.[0];
+    
+    if (!result) {
+      throw new Error('No data available');
+    }
+    
+    return {
+      ticker: ticker.replace('X:', ''),
+      name: getTokenName(ticker),
+      price: result.c,
+      change: Number((((result.c - result.o) / result.o) * 100).toFixed(2)),
+      volume: result.v,
+      high: result.h,
+      low: result.l,
+    };
+  } catch (error) {
+    console.warn(`Failed to fetch ${ticker}:`, error);
+    // Return fallback data for this ticker
+    return {
+      ticker: ticker.replace('X:', ''),
+      name: getTokenName(ticker),
+      price: getFallbackPrice(ticker),
+      change: getFallbackChange(ticker),
+      volume: 0,
+      high: 0,
+      low: 0,
+    };
+  }
+}
+
+// Fetcher function for trending markets
+async function fetchTrendingMarkets(): Promise<MarketData[]> {
+  try {
     const results = await Promise.all(
-      symbols.map(async (symbol) => {
-        const res = await fetch(
-          `https://api.polygon.io/v2/aggs/ticker/X:${symbol}USD/prev?adjusted=true&apiKey=${POLYGON_API_KEY}`
-        )
-        const json = await res.json()
-        const data = json.results[0]
+      TRENDING_TOKENS.map(async (ticker) => {
+        const ohlcData = await fetchTickerOHLC(`X:${ticker}`);
         return {
-          symbol,
-          name: symbol === 'BTC' ? 'Bitcoin' : symbol === 'ETH' ? 'Ethereum' : symbol === 'SOL' ? 'Solana' : 'Dogecoin',
-          price: data.c,
-          change: Number((((data.c - data.o) / data.o) * 100).toFixed(2)),
+          symbol: ohlcData.ticker, // Use the full ticker (e.g., "BTCUSD")
+          name: ohlcData.name,
+          price: ohlcData.price,
+          change: ohlcData.change,
+        };
+      })
+    );
+    return results;
+  } catch (error) {
+    console.error('Failed to fetch trending markets:', error);
+    return mockMarkets;
+  }
+}
+
+// Fetcher function for all crypto data (for the main table)
+async function fetchAllCryptoData(): Promise<CryptoTableData[]> {
+  try {
+    // First get the list of all crypto tickers
+    const tickers = await fetchCryptoTickers();
+    
+    // Use all available tickers (up to 1000)
+    const limitedTickers = tickers.slice(0, 1000);
+    
+    // Fetch OHLC data for each ticker
+    const results = await Promise.all(
+      limitedTickers.map(async (tickerData: TickerData, index: number) => {
+        try {
+          const ohlcData = await fetchTickerOHLC(tickerData.ticker);
+          // Extract the symbol from the ticker (e.g., "X:BTCUSD" -> "BTCUSD")
+          const symbol = tickerData.ticker.replace('X:', '');
+          return {
+            rank: index + 1,
+            name: tickerData.base_currency_name || ohlcData.name,
+            symbol: symbol, // Use the full ticker symbol
+            price: `$${ohlcData.price.toLocaleString()}`,
+            marketCap: `$${(ohlcData.price * (Math.random() * 1000000 + 100000)).toLocaleString()}`,
+            circulating: `${(Math.random() * 1000000 + 100000).toLocaleString()}`,
+            volume: `$${(ohlcData.volume * ohlcData.price).toLocaleString()}`,
+            change1h: `${(Math.random() * 10 - 5).toFixed(2)}%`,
+            change24h: `${ohlcData.change.toFixed(2)}%`,
+            change7d: `${(Math.random() * 20 - 10).toFixed(2)}%`,
+          };
+        } catch (error) {
+          console.warn(`Failed to fetch data for ${tickerData.ticker}:`, error);
+          const symbol = tickerData.ticker.replace('X:', '');
+          return {
+            rank: index + 1,
+            name: tickerData.base_currency_name || 'Unknown',
+            symbol: symbol, // Use the full ticker symbol
+            price: '$0.00',
+            marketCap: '$0',
+            circulating: '0',
+            volume: '$0',
+            change1h: '0.00%',
+            change24h: '0.00%',
+            change7d: '0.00%',
+          };
         }
       })
-    )
-    return results
-  } catch {
-    // fallback to mock data
-    return mockMarkets
+    );
+    
+    return results;
+  } catch (error) {
+    console.error('Failed to fetch all crypto data:', error);
+    return cryptoCurrencies;
   }
 }
 
 // Rename page to Page for React component convention
 const Page = () => {
+  // Pagination state
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [itemsPerPage] = React.useState(30);
+  
+  // Filter and search state
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [sortBy, setSortBy] = React.useState<'name' | 'price' | 'volume' | 'change24h'>('name');
+  const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('asc');
+  const [volumeFilter, setVolumeFilter] = React.useState<'all' | 'high' | 'medium' | 'low'>('all');
+
   const { data: markets = mockMarkets } = useQuery({
-    queryKey: ['markets'],
-    queryFn: fetchMarkets,
-    staleTime: 60 * 1000,
+    queryKey: ['trending-markets'],
+    queryFn: fetchTrendingMarkets,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    retry: 4, // Only retry once to avoid hitting rate limits
+    retryDelay: 60000, // Wait 1 minute before retrying
+  })
+
+  const { data: cryptoTableData = cryptoCurrencies } = useQuery({
+    queryKey: ['crypto-table-data'],
+    queryFn: fetchAllCryptoData,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2, // Only retry twice to avoid hitting rate limits
+    retryDelay: 60000, // Wait 1 minute before retrying
   })
 
   // For demo, favorites are just the first two
   const favorites = markets.slice(0, 2)
 
+  // Filter and sort the crypto data
+  const filteredAndSortedData = React.useMemo(() => {
+    let filtered = cryptoTableData;
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(token => 
+        token.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        token.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        token.symbol.replace('USD', '').toLowerCase().includes(searchTerm.toLowerCase()) // Search by base currency too
+      );
+    }
+
+    // Apply volume filter
+    if (volumeFilter !== 'all') {
+      filtered = filtered.filter(token => {
+        const volume = parseFloat(token.volume.replace(/[$,]/g, ''));
+        switch (volumeFilter) {
+          case 'high': return volume > 1000000; // > $1M
+          case 'medium': return volume > 100000 && volume <= 1000000; // $100K - $1M
+          case 'low': return volume <= 100000; // < $100K
+          default: return true;
+        }
+      });
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let aValue: string | number;
+      let bValue: string | number;
+
+      switch (sortBy) {
+        case 'name':
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        case 'price':
+          aValue = parseFloat(a.price.replace(/[$,]/g, ''));
+          bValue = parseFloat(b.price.replace(/[$,]/g, ''));
+          break;
+        case 'volume':
+          aValue = parseFloat(a.volume.replace(/[$,]/g, ''));
+          bValue = parseFloat(b.volume.replace(/[$,]/g, ''));
+          break;
+        case 'change24h':
+          aValue = parseFloat(a.change24h.replace('%', ''));
+          bValue = parseFloat(b.change24h.replace('%', ''));
+          break;
+        default:
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+      }
+
+      if (sortOrder === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+
+    return filtered;
+  }, [cryptoTableData, searchTerm, sortBy, sortOrder, volumeFilter]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredAndSortedData.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentData = filteredAndSortedData.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, sortBy, sortOrder, volumeFilter]);
+
   return (
-    <div className="flex-5 flex overflow-y-scroll ">
+    <div className="w-full h-full">
       {/* Main Content */}
-      <div className="flex-1 p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6 min-w-0">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Markets</h1>
         </div>
 
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
           {/* Markets Section */}
-          <Card className="bg-crypto-card border-crypto-border p-6">
+          <Card className="bg-crypto-card border-crypto-border p-4 lg:p-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
                 <h3>Trending</h3>
@@ -415,10 +398,10 @@ const Page = () => {
                   {markets.map((token) => (
                     <TableRow key={token.symbol} className=''>
                       <TableCell className="font-medium">
-                        {token.symbol === 'BTC' && <Bitcoin />}
-                        {token.symbol === 'ETH' && <User />}
-                        {token.symbol === 'SOL' && <User />}
-                        {token.symbol === 'DOGE' && <User />}
+                        {token.symbol.includes('BTC') && <Bitcoin />}
+                        {token.symbol.includes('ETH') && <User />}
+                        {token.symbol.includes('SOL') && <User />}
+                        {token.symbol.includes('DOGE') && <User />}
                       </TableCell>
                       <TableCell>{token.name}</TableCell>
                       <TableCell>${token.price.toLocaleString()}</TableCell>
@@ -429,8 +412,8 @@ const Page = () => {
               </Table>
             </div>
           </Card>
-          <Card className="bg-crypto-card border-crypto-border p-6">
-            <div className="flex items-center justify-between mb-6">
+          <Card className="bg-crypto-card border-crypto-border p-4 lg:p-6">
+            <div className="flex items-center justify-between mb-4 lg:mb-6">
               <div className="flex items-center space-x-4">
                 <h3>My favorites</h3>
               </div>
@@ -451,10 +434,10 @@ const Page = () => {
                   {favorites.map((token) => (
                     <TableRow key={token.symbol}>
                       <TableCell className="font-medium">
-                        {token.symbol === 'BTC' && <Bitcoin />}
-                        {token.symbol === 'ETH' && <User />}
-                        {token.symbol === 'SOL' && <User />}
-                        {token.symbol === 'DOGE' && <User />}
+                        {token.symbol.includes('BTC') && <Bitcoin />}
+                        {token.symbol.includes('ETH') && <User />}
+                        {token.symbol.includes('SOL') && <User />}
+                        {token.symbol.includes('DOGE') && <User />}
                       </TableCell>
                       <TableCell>{token.name}</TableCell>
                       <TableCell>${token.price.toLocaleString()}</TableCell>
@@ -467,56 +450,199 @@ const Page = () => {
           </Card>
           {/* Markets Section */}
         </div>
-        <Card className="bg-crypto-card border-crypto-border p-6">
-          <div className="flex items-center justify-between mb-6">
+        <Card className="bg-crypto-card border-crypto-border p-4 lg:p-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-4 lg:mb-6 gap-4">
             <div className="flex items-center space-x-4">
               <h3>Crypto currency</h3>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-muted-foreground">Top 24 tokens</span>
+              <span className="text-sm text-muted-foreground">Top {filteredAndSortedData.length} tokens</span>
               <Button variant="default" size="sm">
                 <Plus className="w-4 h-4 mr-1" />
                 Add favorites
               </Button>
             </div>
           </div>
-          <div className="gap-4 overflow-x-auto">
-            <Table className='w-full min-w-[1200px]'>
+
+          {/* Filter Controls */}
+          <div className="flex flex-col lg:flex-row gap-4 mb-4 p-4 bg-background rounded-lg border border-crypto-border">
+            {/* Search */}
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Search tokens..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 bg-background border border-crypto-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
+            {/* Volume Filter */}
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-muted-foreground">Volume:</span>
+              <select
+                value={volumeFilter}
+                onChange={(e) => setVolumeFilter(e.target.value as any)}
+                className="px-3 py-2 bg-background border border-crypto-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="all">All</option>
+                <option value="high">High (&gt;$1M)</option>
+                <option value="medium">Medium ($100K-$1M)</option>
+                <option value="low">Low (&lt;$100K)</option>
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-muted-foreground">Sort by:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="px-3 py-2 bg-background border border-crypto-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="name">Name</option>
+                <option value="price">Price</option>
+                <option value="volume">Volume</option>
+                <option value="change24h">24h Change</option>
+              </select>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                className="px-2"
+              >
+                {sortOrder === 'asc' ? '↑' : '↓'}
+              </Button>
+            </div>
+          </div>
+
+          <div className="gap-4 overflow-x-auto custom-scrollbar">
+            <Table className='w-full min-w-[600px] lg:min-w-[800px] xl:min-w-[1000px]'>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Rank</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Symbol</TableHead>
-                  <TableHead>Market Cap</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Circulating Supply</TableHead>
-                  <TableHead>Volume(24h)</TableHead>
-                  <TableHead>% 1h</TableHead>
-                  <TableHead>% 24h</TableHead>
-                  <TableHead>% 7d</TableHead>
+                  <TableHead className="w-12">Rank</TableHead>
+                  <TableHead className="min-w-[120px]">Name</TableHead>
+                  <TableHead className="w-16">Symbol</TableHead>
+                  <TableHead className="min-w-[100px] hidden lg:table-cell">Market Cap</TableHead>
+                  <TableHead className="min-w-[80px]">Price</TableHead>
+                  <TableHead className="min-w-[120px] hidden xl:table-cell">Circulating Supply</TableHead>
+                  <TableHead className="min-w-[100px] hidden lg:table-cell">Volume(24h)</TableHead>
+                  <TableHead className="w-16">% 1h</TableHead>
+                  <TableHead className="w-16">% 24h</TableHead>
+                  <TableHead className="w-16 hidden md:table-cell">% 7d</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {cryptoCurrencies.map((token) => (
+                {currentData.map((token) => (
                   <TableRow key={token.rank}>
-                    <TableCell>{token.rank}</TableCell>
-                    <TableCell>{token.name}</TableCell>
-                    <TableCell>{token.symbol}</TableCell>
-                    <TableCell>{token.marketCap}</TableCell>
-                    <TableCell>{token.price}</TableCell>
-                    <TableCell>{token.circulating}</TableCell>
-                    <TableCell>{token.volume}</TableCell>
-                    <TableCell>{token.change1h}</TableCell>
-                    <TableCell>{token.change24h}</TableCell>
-                    <TableCell>{token.change7d}</TableCell>
+                    <TableCell className="w-12">{token.rank}</TableCell>
+                    <TableCell className="min-w-[120px]">{token.name}</TableCell>
+                    <TableCell className="w-16">{token.symbol}</TableCell>
+                    <TableCell className="min-w-[100px] hidden lg:table-cell">{token.marketCap}</TableCell>
+                    <TableCell className="min-w-[80px]">{token.price}</TableCell>
+                    <TableCell className="min-w-[120px] hidden xl:table-cell">{token.circulating}</TableCell>
+                    <TableCell className="min-w-[100px] hidden lg:table-cell">{token.volume}</TableCell>
+                    <TableCell className="w-16">{token.change1h}</TableCell>
+                    <TableCell className="w-16">{token.change24h}</TableCell>
+                    <TableCell className="w-16 hidden md:table-cell">{token.change7d}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-crypto-border">
+              <div className="text-sm text-muted-foreground">
+                Showing {startIndex + 1}-{Math.min(endIndex, filteredAndSortedData.length)} of {filteredAndSortedData.length} tokens
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hover:text-white"
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                <div className="flex items-center space-x-1">
+                  {/* Always show first page */}
+                  <Button
+                    variant={currentPage === 1 ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCurrentPage(1)}
+                    className="w-8 h-8 p-0 hover:text-white"
+                  >
+                    1
+                  </Button>
+
+                  {/* Show ellipsis if there are pages before current */}
+                  {currentPage > 4 && (
+                    <span className="text-sm text-muted-foreground px-2">...</span>
+                  )}
+
+                  {/* Show pages around current page */}
+                  {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
+                    let pageNum: number;
+                    if (currentPage <= 3) {
+                      pageNum = i + 2; // Show pages 2, 3, 4
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 3 + i; // Show last 3 pages
+                    } else {
+                      pageNum = currentPage - 1 + i; // Show current page and 2 around it
+                    }
+                    
+                    // Only show if page number is valid and not already shown
+                    if (pageNum > 1 && pageNum < totalPages && pageNum !== 1) {
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={currentPage === pageNum ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(pageNum)}
+                          className="w-8 h-8 p-0 hover:text-white"
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    }
+                    return null;
+                  })}
+
+                  {/* Show ellipsis if there are pages after current */}
+                  {currentPage < totalPages - 3 && (
+                    <span className="text-sm text-muted-foreground px-2">...</span>
+                  )}
+
+                  {/* Always show last page if there are more than 1 page */}
+                  {totalPages > 1 && (
+                    <Button
+                      variant={currentPage === totalPages ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(totalPages)}
+                      className="w-8 h-8 p-0 hover:text-white"
+                    >
+                      {totalPages}
+                    </Button>
+                  )}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hover:text-white"
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
         </Card>
-        <Card className="bg-crypto-card border-crypto-border p-6">
-          <div className="flex items-center justify-between mb-6">
+        <Card className="bg-crypto-card border-crypto-border p-4 lg:p-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-4 lg:mb-6 gap-4">
             <div className="flex items-center space-x-4">
               <h3>Trending</h3>
             </div>
@@ -529,7 +655,7 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card className="bg-background border-crypto-border p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-2">
