@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Bitcoin, TrendingUp, TrendingDown, DollarSign, ArrowUpDown, Plus, Minus, X, ArrowRight, Settings, BarChart3, Clock } from 'lucide-react'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 // Mock token data
@@ -21,7 +22,7 @@ const SWAP_HISTORY = [
   { id: '3', fromToken: 'USDC', toToken: 'SOL', fromAmount: 1000, toAmount: 10, rate: 0.01, status: 'pending', time: '3 days ago', txHash: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6' }
 ];
 
-const Page = () => {
+const SwapContent = () => {
   const searchParams = useSearchParams();
   
   // Initialize state from URL parameters if they exist
@@ -365,6 +366,14 @@ const Page = () => {
         </Card>
       </div>
     </div>
+  );
+};
+
+const Page = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SwapContent />
+    </Suspense>
   );
 };
 

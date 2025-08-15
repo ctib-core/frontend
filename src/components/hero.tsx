@@ -20,9 +20,9 @@ const HeroSection = () => {
           </div>
 
           <p className="text-xl text-muted-foreground max-w-xl">
-            Master the art of prediction trading with our advanced simulation platform.
+            {`Master the art of prediction trading with our advanced simulation platform.
             Practice with virtual funds, analyze market patterns, and build confidence
-            before risking real capital in the world's most sophisticated prediction markets.
+            before risking real capital in the world's most sophisticated prediction markets.`}
           </p>
 
           <div className="flex space-x-4">

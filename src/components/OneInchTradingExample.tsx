@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -87,7 +88,7 @@ export const OneInchTradingExample: React.FC<OneInchTradingExampleProps> = ({
   }, [tokens, selectedFromToken]);
 
   // Fetch quote when parameters change
-  const fetchQuote = async () => {
+  const fetchQuote = useCallback(async () => {
     if (!selectedFromToken || !selectedToToken || !amount) return;
 
     setIsLoadingQuote(true);
@@ -99,7 +100,7 @@ export const OneInchTradingExample: React.FC<OneInchTradingExampleProps> = ({
     } finally {
       setIsLoadingQuote(false);
     }
-  };
+  }, [selectedFromToken, selectedToToken, amount]);
 
   // Auto-fetch quote when parameters change
   useEffect(() => {
@@ -107,7 +108,7 @@ export const OneInchTradingExample: React.FC<OneInchTradingExampleProps> = ({
       const timeoutId = setTimeout(fetchQuote, 500); // Debounce
       return () => clearTimeout(timeoutId);
     }
-  }, [selectedFromToken, selectedToToken, amount]);
+  }, [selectedFromToken, selectedToToken, amount, fetchQuote]);
 
   // Create limit order
   const handleCreateLimitOrder = async () => {
@@ -300,7 +301,7 @@ export const OneInchTradingExample: React.FC<OneInchTradingExampleProps> = ({
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">You'll receive:</span>
+                    <span className="text-sm text-muted-foreground">{`You'll receive:`}</span>
                     <span className="font-medium">
                       {formatTokenAmount(quote.toTokenAmount)} {getTokenByAddress(selectedToToken)?.symbol}
                     </span>

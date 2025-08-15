@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ethers } from "ethers";
 import type { OrderSpec, TradeExecutionResult } from "@/utils/types";
 import { LIMIT_ORDER_ABI } from "./abi";

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ONECHIN_CONFIG, validateApiKey } from './config';
 
 // Note: This will be properly implemented once @1inch/limit-order-sdk is installed

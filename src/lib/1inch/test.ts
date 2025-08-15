@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Test file for 1inch integration
 import { 
   fetch1inchQuote, 

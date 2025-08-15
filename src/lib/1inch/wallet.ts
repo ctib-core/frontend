@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ONECHIN_CONFIG } from './config';
 
 export interface WalletInfo {

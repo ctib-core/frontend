@@ -6,6 +6,7 @@ import { WagmiProvider } from 'wagmi'
 export const config = createConfig({
   chains: [localhost, mainnet, coreDao, coreTestnet2],
   transports: {
+    [localhost.id]: http(),
     [mainnet.id]: http(),
     [coreDao.id]: http(),
     [coreTestnet2.id]: http(),

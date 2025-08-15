@@ -2,7 +2,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Menu, Home, Settings, User, LogOut, ChevronDown, ChevronRight, Star, Heart, Eye } from 'lucide-react'
+import { Home, Settings, User, LogOut, ChevronDown, ChevronRight, Star, Heart, Eye } from 'lucide-react'
 import React from 'react'
 
 const Page = () => {

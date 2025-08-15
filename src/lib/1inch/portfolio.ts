@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ONECHIN_CONFIG, getAuthHeaders, validateApiKey } from './config';
 import { PortfolioOverview, TokenBalance } from './types';
 import { getWalletAddresses } from './wallet';

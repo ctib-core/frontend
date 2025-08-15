@@ -1,12 +1,8 @@
 // Read API key from any of these (client-safe first). Avoid hardcoded defaults.
-const API_KEY =
-  process.env.NEXT_PUBLIC_1INCH_API ||
-  process.env.NEXT_1INCH_API ||
-  process.env.ONEINCH_API_KEY ||
-  '';
+const API_KEY = process.env.NEXT_1INCH_API;
 
 export const ONECHIN_CONFIG = {
-  API_KEY,
+  API_KEY: `${API_KEY}`,
   BASE_URL: 'https://api.1inch.dev',
   NETWORK_ID: 1, // Ethereum mainnet
   DEFAULT_CHAIN_ID: 1,

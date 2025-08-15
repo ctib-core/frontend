@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ONECHIN_CONFIG, getAuthHeaders, validateApiKey } from './config';
 import { QuoteResponse, TokenInfo, MarketData } from './types';
 

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Search, BookOpen, FileText, Code, Download, ExternalLink, ChevronRight, Star, GitBranch, Calendar } from 'lucide-react'
+import { Search, BookOpen, FileText, Code, Download, ExternalLink, ChevronRight, Star, GitBranch} from 'lucide-react'
 import React from 'react'
 
 // Mock README content
@@ -10,10 +11,10 @@ const README_SECTIONS = [
   {
     id: 'getting-started',
     title: 'Getting Started',
-    content: `# Predict - DeFi Trading Platform
+    content: `# Pulley - DeFi Trading Platform
 
 ## Overview
-Predict is a comprehensive DeFi trading platform built with Next.js, React, and TypeScript. It provides advanced trading capabilities, portfolio management, and yield farming features.
+Pulley is a comprehensive DeFi trading platform built with Next.js, React, and TypeScript. It provides advanced trading capabilities, portfolio management, and yield farming features.
 
 ## Features
 - **CFD Trading**: Advanced contract for difference trading with real-time charts

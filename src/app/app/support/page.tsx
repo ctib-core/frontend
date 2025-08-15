@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { MessageCircle, Mail, Phone, HelpCircle, Search, Send, Clock, CheckCircle, AlertCircle, FileText, ExternalLink } from 'lucide-react'
+import { MessageCircle, Mail, Phone, HelpCircle, Search, Send, Clock, CheckCircle, AlertCircle, FileText, ExternalLink, ChevronRight } from 'lucide-react'
 import React from 'react'
 
 // Mock FAQ data

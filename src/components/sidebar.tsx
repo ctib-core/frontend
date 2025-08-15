@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -111,9 +112,9 @@ const Sidebar = () => {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xs">E</span>
+              <span className="text-primary-foreground font-bold text-lg">P</span>
             </div>
-            <Link href="/" className="text-foreground font-semibold text-sm">Predict</Link>
+            <Link href="/" className="text-foreground font-semibold text-sm">Pulley</Link>
           </div>
           <div className="flex items-center space-x-1">
             <Button variant="ghost" size="sm" className="p-1 h-6 w-6">

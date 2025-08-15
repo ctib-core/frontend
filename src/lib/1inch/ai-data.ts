@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fetch1inchQuote } from './market-data';
 import { fetchSupportedTokens } from './tokens';
 import { AIMarketData, OrderBook, OrderBookEntry } from './types';

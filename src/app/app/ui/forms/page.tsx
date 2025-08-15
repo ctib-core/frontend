@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -9,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Switch } from '@/components/ui/switch'
-import { User, Mail, Lock, Phone, MapPin, Calendar, CreditCard, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import React from 'react'
 
 const Page = () => {
@@ -325,7 +326,7 @@ const Page = () => {
                 placeholder="Enter email address"
                 className="mt-1"
               />
-              <p className="text-xs text-muted-foreground mt-1">We'll never share your email</p>
+              <p className="text-xs text-muted-foreground mt-1">{`We'll never share your email`}</p>
             </div>
 
             <div>
@@ -415,14 +416,14 @@ const Page = () => {
             <div>
               <h4 className="font-medium mb-3">Form Features</h4>
               <div className="bg-background rounded-lg border border-crypto-border p-4">
-                <div className="space-y-2 text-sm">
+                {/* <div className="space-y-2 text-sm">
                   <div><code className="bg-muted px-1 rounded">required</code> - Required field validation</div>
                   <div><code className="bg-muted px-1 rounded">type="email"</code> - Email input validation</div>
                   <div><code className="bg-muted px-1 rounded">minLength={8}</code> - Minimum length validation</div>
                   <div><code className="bg-muted px-1 rounded">placeholder</code> - Input placeholder text</div>
                   <div><code className="bg-muted px-1 rounded">onChange</code> - Handle input changes</div>
                   <div><code className="bg-muted px-1 rounded">onSubmit</code> - Handle form submission</div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

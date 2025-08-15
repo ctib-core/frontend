@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from "zod";
 import { createGroqModel } from "@/lib/llm/groq";
 import { fetchCryptoPanicNews, summarizeNews } from "@/lib/news/cryptopanic";

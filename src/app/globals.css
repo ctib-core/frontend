@@ -229,6 +229,135 @@
     }
   }
 
+  /* Modal Animation Classes */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+  }
+
+  .modal-backdrop.entering {
+    @apply opacity-100;
+  }
+
+  .modal-backdrop.exiting {
+    @apply opacity-0;
+  }
+
+  .modal-card {
+    @apply bg-crypto-card border-crypto-border p-6 w-full max-w-md transform;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+  }
+
+  .modal-card.entering {
+    @apply scale-100 opacity-100 translate-y-0;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  .modal-card.exiting {
+    @apply scale-95 opacity-0 translate-y-4;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.02);
+  }
+
+  /* Enhanced modal animations */
+  .modal-enter {
+    animation: modalEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .modal-exit {
+    animation: modalExit 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes modalEnter {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(1rem);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes modalExit {
+    from {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95) translateY(1rem);
+    }
+  }
+
+  /* Staggered form element animations */
+  .form-element {
+    animation: formElementEnter 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  .form-element:nth-child(1) { animation-delay: 0.1s; }
+  .form-element:nth-child(2) { animation-delay: 0.15s; }
+  .form-element:nth-child(3) { animation-delay: 0.2s; }
+  .form-element:nth-child(4) { animation-delay: 0.25s; }
+
+  @keyframes formElementEnter {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enhanced backdrop animations */
+  .backdrop-enter {
+    animation: backdropEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .backdrop-exit {
+    animation: backdropExit 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes backdropEnter {
+    from {
+      opacity: 0;
+      backdrop-filter: blur(0px);
+    }
+    to {
+      opacity: 1;
+      backdrop-filter: blur(8px);
+    }
+  }
+
+  @keyframes backdropExit {
+    from {
+      opacity: 1;
+      backdrop-filter: blur(8px);
+    }
+    to {
+      opacity: 0;
+      backdrop-filter: blur(0px);
+    }
+  }
+
+  /* Modal content slide-in animation */
+  .modal-content {
+    animation: contentSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes contentSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   #root {
     max-width: 1280px;
     margin: 0 auto;

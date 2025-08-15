@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ONECHIN_CONFIG, getAuthHeaders, validateApiKey } from './config';
 import { TokenBalance } from './types';
 import { getWalletForAPI, getCurrentChainId } from './wallet';
