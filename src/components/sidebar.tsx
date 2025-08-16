@@ -28,13 +28,13 @@ import {
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useAccount, useConnect } from '@particle-network/connectkit';
+import { ConnectButton, useAccount, useConnect } from '@particle-network/connectkit';
 
 const Sidebar = () => {
   const [activeItem, setActiveItem] = useState("Portfolio");
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  
+
   // Particle Network ConnectKit hooks
   const { address, isConnected } = useAccount();
   const { connect, data: userData } = useConnect();
@@ -52,11 +52,11 @@ const Sidebar = () => {
   // Function to get display name
   const getDisplayName = () => {
     console.log("getDisplayName called - isConnected:", isConnected, "address:", address);
-    
+
     if (!mounted) {
       return "Loading...";
     }
-    
+
     if (!isConnected) {
       return "Connect Wallet";
     }
@@ -211,38 +211,42 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Footer with User Profile */}
+      Footer with User Profile
       {mounted && (
-        <div className="p-3 border-t border-crypto-border">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-gradient-primary rounded-full">
-                {getUserAvatar() && (
-                  <Image
-                    src={getUserAvatar()}
-                    width={24}
-                    height={24}
-                    alt="User Avatar" 
-                    className="w-6 h-6 rounded-full object-cover"
-                  />
-                )}
-              </div>
-              <span className="text-xs text-muted-foreground">{getDisplayName()}</span>
-            </div>
-            {shouldShowDisconnect && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="p-1 text-red-400 hover:text-red-300"
-                onClick={() => {
-                  // Handle disconnect logic here
-                  console.log("Disconnect clicked");
-                }}
-              >
-                <LogOut className="w-4 h-4" />
-              </Button>
-            )}
-          </div>
+        // <div className="p-3 border-t border-crypto-border">
+        //   <div className="flex items-center justify-between">
+        //     <div className="flex items-center space-x-2">
+        //       <div className="w-6 h-6 bg-gradient-primary rounded-full">
+        //         {getUserAvatar() && (
+        //           <Image
+        //             src={getUserAvatar()}
+        //             width={24}
+        //             height={24}
+        //             alt="User Avatar"
+        //             className="w-6 h-6 rounded-full object-cover"
+        //           />
+        //         )}
+        //         {/* <ConnectButton /> */}
+        //       </div>
+        //       <span className="text-xs text-muted-foreground">{getDisplayName()}</span>
+        //     </div>
+        //     {shouldShowDisconnect && (
+        //       <Button
+        //         variant="ghost"
+        //         size="sm"
+        //         className="p-1 text-red-400 hover:text-red-300"
+        //         onClick={() => {
+        //           // Handle disconnect logic here
+        //           console.log("Disconnect clicked");
+        //         }}
+        //       >
+        //         <LogOut className="w-4 h-4" />
+        //       </Button>
+        //     )}
+        //   </div>
+        // </div>
+        <div className="px-5 py-4">
+          <ConnectButton />
         </div>
       )}
     </div>

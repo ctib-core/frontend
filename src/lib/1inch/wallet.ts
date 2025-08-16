@@ -86,7 +86,7 @@ export const initializeWallet = (address: string, chainId?: number): void => {
   if (!validateWalletAddress(address)) {
     throw new Error('Invalid wallet address format');
   }
-  
+
   setCurrentWallet({
     address,
     chainId: chainId || ONECHIN_CONFIG.DEFAULT_CHAIN_ID,
@@ -106,7 +106,7 @@ export const clearWallet = (): void => {
  */
 export const getWalletForAPI = (): { address: string; chainId: number } => {
   const wallet = getCurrentWallet();
-  
+
   if (!wallet || !wallet.isConnected) {
     // Return mock wallet for development
     const mockWallet = createMockWallet();
@@ -115,7 +115,7 @@ export const getWalletForAPI = (): { address: string; chainId: number } => {
       chainId: mockWallet.chainId
     };
   }
-  
+
   return {
     address: wallet.address,
     chainId: wallet.chainId
@@ -127,7 +127,7 @@ export const getWalletForAPI = (): { address: string; chainId: number } => {
  */
 export const getWalletAddresses = (): string[] => {
   const wallet = getCurrentWallet();
-  
+
   if (!wallet || !wallet.isConnected) {
     // Return mock addresses for development
     return [
@@ -135,7 +135,7 @@ export const getWalletAddresses = (): string[] => {
       '0x0987654321098765432109876543210987654321'
     ];
   }
-  
+
   return [wallet.address];
 };
 
@@ -144,7 +144,7 @@ export const getWalletAddresses = (): string[] => {
  */
 export const getWalletStatus = () => {
   const wallet = getCurrentWallet();
-  
+
   return {
     isConnected: wallet?.isConnected || false,
     address: wallet?.address || null,
