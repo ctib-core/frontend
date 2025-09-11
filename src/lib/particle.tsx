@@ -26,53 +26,54 @@ const config = createConfig({
   appearance: {
     mode: 'dark',
     theme: {
-      // modal
-      // '--pcm-overlay-background': 'rgba(71, 88, 107, 0.24)',
-      '--pcm-overlay-backdrop-filter': 'blur(6px)',
-      '--pcm-modal-box-shadow': '0px 2px 4px rgba(0, 0, 0, 0.1)',
+      //       // modal
+      //       // '--pcm-overlay-background': 'rgba(71, 88, 107, 0.24)',
+      //       '--pcm-overlay-backdrop-filter': 'blur(6px)',
+      //       '--pcm-modal-box-shadow': '0px 2px 4px rgba(0, 0, 0, 0.1)',
 
-      // background
-      '--pcm-body-background': '#0a0f1a',
-      '--pcm-body-background-secondary': '#EFF0F2',
-      '--pcm-body-background-tertiary': '#F9F9FA',
+      //       // background
+      //       // '--pcm-body-background': '#0a0f1a',
+      //       '--pcm-body-background': '#0a0f1a',
+      //       '--pcm-body-background-secondary': '#EFF0F2',
+      //       '--pcm-body-background-tertiary': '#F9F9FA',
 
-      // foreground
-      '--pcm-body-color': '#ffffff',
-      // '--pcm-body-color-secondary': '#8B8EA1',
-      // '--pcm-body-color-tertiary': '#DCDFE6',
+      //       // foreground
+      //       '--pcm-body-color': '#ffffff',
+      //       '--pcm-body-color-secondary': '#8B8EA1',
+      //       '--pcm-body-color-tertiary': '#DCDFE6',
 
-      '--pcm-body-action-color': '#999999',
-      '--pcm-accent-color': '#A257FA',
-      '--pcm-focus-color': '#A257FA',
+      //       '--pcm-body-action-color': '#999999',
+      //       '--pcm-accent-color': '#A257FA',
+      //       '--pcm-focus-color': '#A257FA',
 
-      // button
-      '--pcm-button-font-weight': '500',
-      '--pcm-button-hover-shadow': '0px 2px 4px rgba(0, 0, 0, 0.05)',
-      '--pcm-button-border-color': 'gray',
+      //       // button
+      //       '--pcm-button-font-weight': '500',
+      //       '--pcm-button-hover-shadow': '0px 2px 4px rgba(0, 0, 0, 0.05)',
+      //       '--pcm-button-border-color': 'gray',
 
-      // primary button
-      '--pcm-primary-button-color': '#b6ff3b',
-      '--pcm-primary-button-bankground': 'transparent',
-      '--pcm-primary-button-hover-background': '#353738',
+      //       // primary button
+      //       '--pcm-primary-button-color': '#b6ff3b',
+      //       '--pcm-primary-button-bankground': 'transparent',
+      //       '--pcm-primary-button-hover-background': '#353738',
 
-      // font
-      '--pcm-font-family': `-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
-'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji',
-'Segoe UI Symbol'`,
+      //       // font
+      //       '--pcm-font-family': `-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
+      // 'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji',
+      // 'Segoe UI Symbol'`,
 
-      // radius
-      // '--pcm-rounded-sm': '6px',
-      // '--pcm-rounded-md': '12px',
-      // '--pcm-rounded-lg': '18px',
-      // '--pcm-rounded-xl': '24px',
-      // '--pcm-rounded-full': '9999px',
-      // '--pcm-rounded-xl': '0px',
+      //       // radius
+      //       // '--pcm-rounded-sm': '6px',
+      //       // '--pcm-rounded-md': '12px',
+      //       // '--pcm-rounded-lg': '18px',
+      //       // '--pcm-rounded-xl': '24px',
+      //       // '--pcm-rounded-full': '9999px',
+      //       // '--pcm-rounded-xl': '0px',
 
-      '--pcm-success-color': '#58C08F',
-      '--pcm-warning-color': '#F59E0A',
-      '--pcm-error-color': '#EA4335',
+      //       '--pcm-success-color': '#58C08F',
+      //       '--pcm-warning-color': '#F59E0A',
+      //       '--pcm-error-color': '#EA4335',
 
-      // '--pcm-wallet-label-color': '#33C759',
+      //       // '--pcm-wallet-label-color': '#33C759',
     },
   },
 

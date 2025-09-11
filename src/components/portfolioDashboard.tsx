@@ -15,10 +15,12 @@ import {
   type TokenInfo
 } from '@/lib/1inch';
 import React from 'react';
+import { ConnectButton, useAccount } from "@particle-network/connectkit";
 
 const PortfolioDashboard = () => {
   // Check if API key is configured (client-side only)
   const [hasApiKey, setHasApiKey] = React.useState(false);
+  const { address } = useAccount()
 
   React.useEffect(() => {
     setHasApiKey(validateApiKey());
@@ -84,11 +86,14 @@ const PortfolioDashboard = () => {
             <Badge variant={hasApiKey ? "default" : "secondary"}>
               {hasApiKey ? "✅ 1inch API Connected" : "❌ 1inch API Missing"}
             </Badge>
-            {walletStatus.isConnected && (
+            <div className="text-white border-1 border-gray-400 p-1 rounded-sm">
+              {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ""}
+            </div>
+            {/* {walletStatus.isConnected && (
               <Badge variant="outline">
                 🦊 {walletStatus.formattedAddress}
               </Badge>
-            )}
+            )} */}
           </div>
         </div>
 
