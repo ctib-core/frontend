@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@1inch/limit-order-sdk": "^5.0.4",
+    "@coinbase/onchainkit": "^0.38.19",
+    "@farcaster/frame-wagmi-connector": "^1.0.0",
     "@hookform/resolvers": "^3.9.0",
     "@langchain/groq": "^0.2.3",
     "@particle-network/connectkit": "^2.1.3",
@@ -67,6 +68,7 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^9.0.1",
     "vaul": "^0.9.3",
     "viem": "^2.33.0",
     "wagmi": "^2.16.3",
@@ -78,11 +80,16 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/uuid": "^9.0.8",
+    "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@10.14.0"
+  "packageManager": "pnpm@10.14.0",
+  "resolutions": {
+    "uuid": "^9.0.1"
+  }
 }

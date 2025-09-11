@@ -2,9 +2,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ParticleConnectkit } from "@/lib/particle";
-import WagProvider from "@/utils/provider";
-
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,10 +14,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Pulley",
-  description: "Pulley is an AI powered trading platform built on the Bitcoiin Core Netwrok.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const URL = process.env.NEXT_PUBLIC_URL as string;
+  
+  return {
+    title: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME || "Pulley",
+    description: process.env.NEXT_PUBLIC_APP_DESCRIPTION || "Pulley is an AI powered trading platform built on the Bitcoin Core Network.",
+    other: {
+      'fc:frame': JSON.stringify({
+        version: 'next',
+        imageUrl: process.env.NEXT_PUBLIC_APP_HERO_IMAGE || `${URL}/og.png`,
+        button: {
+          title: `Launch ${process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME || 'Pulley'}`,
+          action: {
+            type: 'launch_frame',
+            name: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME || 'Pulley',
+            url: `${URL}/mini-app`,
+            splashImageUrl: process.env.NEXT_PUBLIC_APP_SPLASH_IMAGE || `${URL}/splash.png`,
+            splashBackgroundColor: process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR || '#0a0f1a',
+          },
+        },
+      }),
+    },
+  };
+}
 
 const COLORS = {
   bg: "#0a0f1a",
@@ -42,11 +60,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-hero`}
         style={{ background: COLORS.bg }}
       >
-        <WagProvider>
-          <ParticleConnectkit>
-            {children}
-          </ParticleConnectkit>
-        </WagProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html >
   );
